@@ -6,15 +6,14 @@ public class PlayerController : MonoBehaviour
 	public Vector3 v = new Vector3 (2.5f, 6f, 0);
 	Rigidbody rb;
 	Renderer rd;
-
-	int jumpTimes=0;
-	int maxJumpTimes=1;
+	int jumpTimes = 0;
+	int maxJumpTimes = 1;
 
 	// Use this for initialization
 	void Start ()
 	{
 		rb = GetComponent<Rigidbody> (); 
-		rd=GetComponent<Renderer>();
+		rd = GetComponent<Renderer> ();
 
 		transform.localPosition = new Vector3 (0, 3, 0);
 	}
@@ -30,14 +29,15 @@ public class PlayerController : MonoBehaviour
 	void OnCollisionEnter (Collision collsion)
 	{	
 		rb.velocity = v;
-		jumpTimes=0;
-		DynamicBrick db=collsion.gameObject.GetComponent<DynamicBrickController>().DB;
-		rd.material.color=db.BColor.C;
+		jumpTimes = 0;
+		DynamicBrick db = collsion.gameObject.GetComponent<DynamicBrickController> ().DB;
+		rd.material.color = db.BColor.C;
 
-		PlaySceneController.instance.BM.GetLeaveBricks(db);
+//		PlaySceneController.instance.BM.GetLeaveBricks(db);
+
+		PlayGameInstance.INSTANCE.PSC.BM.GetLeaveBricks (db);
 
 	}
-
 
 	public void OnTouchDown ()
 	{

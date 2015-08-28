@@ -4,7 +4,7 @@ using System.Collections;
 public class PlaySceneController : MonoBehaviour
 {
 
-	public static PlaySceneController instance;
+//	public static PlaySceneController instance;
 	BrickManager bM;
 
 	public BrickManager BM {
@@ -19,7 +19,7 @@ public class PlaySceneController : MonoBehaviour
 
 	void Awake ()
 	{
-		instance = this;
+//		instance = this;
 		bM = this.gameObject.GetComponentInChildren<BrickManager> ();
 		pC = this.gameObject.GetComponentInChildren<PlayerController> ();
 		pC.gameObject.SetActive (false);

@@ -1,7 +1,4 @@
-﻿using UnityEngine;
-using System.Collections;
-
-public class GameData  {
+﻿public class GameData  {
 
 
 	public static GameData Instance {

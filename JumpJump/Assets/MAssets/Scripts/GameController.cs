@@ -16,7 +16,6 @@ public class GameController : MonoBehaviour {
 	{
 		instance = this;
 		Init ();
-
 	}
 
 	void Init(){

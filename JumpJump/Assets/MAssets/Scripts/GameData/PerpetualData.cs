@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-using System.Collections;
-
+﻿
 public class PerpetualData  {
 	private static string HIGEST_SCORE = "HighestScore";
 	public int HighestScore {

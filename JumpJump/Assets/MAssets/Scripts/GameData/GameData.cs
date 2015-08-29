@@ -16,6 +16,9 @@
 	
 	private static GameData _Instance;
 
+	private GameData(){
+	}
+
 	public SettingData MSettingData {
 		get{
 			if(_MSettingData == null){

@@ -11,6 +11,7 @@ using System;
 
 public interface IPlayGame
 {
+
 	void OnStart ();
 
 	void OnReStart ();
@@ -18,6 +19,8 @@ public interface IPlayGame
 	void OnPause ();
 
 	void OnResume ();
+
+	void OnGameResult();
 	
 }
 

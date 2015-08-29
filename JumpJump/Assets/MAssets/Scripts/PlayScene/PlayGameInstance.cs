@@ -12,23 +12,26 @@ using System;
 public class PlayGameInstance:IPlayGame
 {
 	public static PlayGameInstance INSTANCE;
-	IPlayGameOver pGOInstance;
-
-	public IPlayGameOver PGOInstance {
-		get { return pGOInstance;}
-		set { pGOInstance = value;}
-	}
-
 	PlaySceneController pSC;
-
 	public PlaySceneController PSC {
 		get { return pSC;}
 		set { pSC = value;}
 	}
+	public delegate void OnGameResult_Delegate ();
+	public OnGameResult_Delegate  OnGameResultDelegate;
 
-	public PlayGameInstance (PlaySceneController pSC, IPlayGameOver pGOInstance)
+
+
+	public void OnGameResult ()
 	{
-		this.pGOInstance = pGOInstance;
+		OnPause();
+
+		if (OnGameResultDelegate != null)
+			OnGameResultDelegate ();
+	}
+
+	public PlayGameInstance (PlaySceneController pSC)
+	{
 		this.pSC = pSC;
 		INSTANCE = this;
 	}
@@ -55,12 +58,16 @@ public class PlayGameInstance:IPlayGame
 
 	public void OnVectory ()
 	{
-		pGOInstance.OnVictory ();
+
 	}
 
 	public void OnFailed ()
 	{
-		pGOInstance.OnFailed ();
+
+	}
+
+	public void OnTouchDown(){
+		pSC.PC.OnTouchDown();
 	}
 
 }

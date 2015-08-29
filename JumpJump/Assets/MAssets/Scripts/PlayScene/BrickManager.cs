@@ -28,6 +28,22 @@ public class BrickManager : MonoBehaviour
 		return db;
 	}
 
+	public void Reset ()
+	{
+		for (int i=0; i<dynamicBricks.Count; i++) {
+			pool.Free (dynamicBricks [i]);
+		}
+		dynamicBricks.Clear ();
+
+		for (int i=0; i<leaveDynamicBricks.Count; i++) {
+			pool.Free (leaveDynamicBricks [i]);
+		}
+		leaveDynamicBricks.Clear ();
+
+		endPot = Vector2.zero;
+		GenerateBlockBrick (Vector2.zero, 10, 3, new Vector3 (20, 20, 0), delayTime_Cell, false);
+	}
+
 	void Awake ()
 	{
 		InitPool ();
@@ -107,19 +123,22 @@ public class BrickManager : MonoBehaviour
 
 	void DynamicEffect ()
 	{	
-		UpdateCurDynamicBrick();
+		UpdateCurDynamicBrick ();
 		UpdateLeaveDynamicBrick ();
 //		UpdateSimulatorPot ();
-		UpdateGenerageDynamicBrick();
+		UpdateGenerageDynamicBrick ();
 	}
 
-	void UpdateCurDynamicBrick(){
+	void UpdateCurDynamicBrick ()
+	{
 		for (int i=0; i<dynamicBricks.Count; i++) {
 			DynamicBrick db = dynamicBricks [i];
 			db.Update ();
 		}
 	}
-	void UpdateGenerageDynamicBrick(){
+
+	void UpdateGenerageDynamicBrick ()
+	{
 		if (dynamicBricks.Count < 20) {
 			int x, y;
 			int r = Random.Range (0, 10);
@@ -133,7 +152,7 @@ public class BrickManager : MonoBehaviour
 				x = Random.Range (3, 8);
 				y = Random.Range (10, 15);
 			}
-			GenerateBlockBrick (new Vector2 (endPot.x+Random.Range(0,3), 0), 3, 3, new Vector3 (x, y, x), delayTime_Cell * 5, false);
+			GenerateBlockBrick (new Vector2 (endPot.x + Random.Range (0, 3), 0), 3, 3, new Vector3 (x, y, x), delayTime_Cell * 5, false);
 		}
 	}
 
@@ -160,14 +179,13 @@ public class BrickManager : MonoBehaviour
 			}
 		}
 	}
-	
 
 	public void GetLeaveBricks (DynamicBrick db_BelowPlayer)
 	{
-		int leaveCount=0;
+		int leaveCount = 0;
 		for (int i=0; i<dynamicBricks.Count; i++) {
 			DynamicBrick db = dynamicBricks [i];
-			if (db_BelowPlayer.Go.transform.localPosition.x >=db.Go.transform.localPosition.x) {
+			if (db_BelowPlayer.Go.transform.localPosition.x >= db.Go.transform.localPosition.x) {
 				leaveCount++;
 				leaveDynamicBricks.Add (db);
 				SetLeave (db, leaveCount);

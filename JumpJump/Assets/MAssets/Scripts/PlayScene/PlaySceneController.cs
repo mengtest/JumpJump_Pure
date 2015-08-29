@@ -3,8 +3,7 @@ using System.Collections;
 
 public class PlaySceneController : MonoBehaviour
 {
-
-//	public static PlaySceneController instance;
+	
 	BrickManager bM;
 
 	public BrickManager BM {
@@ -23,6 +22,7 @@ public class PlaySceneController : MonoBehaviour
 		bM = this.gameObject.GetComponentInChildren<BrickManager> ();
 		pC = this.gameObject.GetComponentInChildren<PlayerController> ();
 		pC.gameObject.SetActive (false);
+		PlayGameInstance.INSTANCE=new PlayGameInstance(this);
 	}
 
 
@@ -91,7 +91,10 @@ public class PlaySceneController : MonoBehaviour
 	}
 
 	public void OnRestart(){
-		StartGame();//
+//		StartGame();//
+		time=0;
+		ShowedPlayer=false;
+		BM.Reset();
 	}
 
 	public void OnGameOver ()

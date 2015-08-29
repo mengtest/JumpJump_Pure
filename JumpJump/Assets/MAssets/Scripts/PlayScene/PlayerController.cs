@@ -21,9 +21,10 @@ public class PlayerController : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
-		if (Input.GetMouseButtonDown (0)) {
-			OnTouchDown ();
-		}
+//		if (Input.GetMouseButtonDown (0)) {
+//			OnTouchDown ();
+//		}
+		CheckFailed();
 	}
 
 	void OnCollisionEnter (Collision collsion)
@@ -45,6 +46,12 @@ public class PlayerController : MonoBehaviour
 			rb.velocity = v;
 		}
 		jumpTimes++;
+	}
+
+	void CheckFailed(){
+		if(transform.localPosition.y<2.8f){
+			PlayGameInstance.INSTANCE.OnGameResult();//.OnPause();
+		}
 	}
 
 }

@@ -10,11 +10,21 @@ public class GameController : MonoBehaviour {
 	public MainPanel mainPanel;
 	public PlayPanel playPanel;
 	public PausePanel pausePanel;
+	public GameOverPanel gameOverPanel;
 
 	void Awake ()
 	{
 		instance = this;
-		pausePanel.Init ();
+		Init ();
+
+	}
+
+	void Init(){
+		mainPanel.gameObject.SetActive (true);
+		playPanel.gameObject.SetActive (false);
+		pausePanel.gameObject.SetActive (false);
+		gameOverPanel.gameObject.SetActive (false);
+
 	}
 
 	public GameController GetInstance(){

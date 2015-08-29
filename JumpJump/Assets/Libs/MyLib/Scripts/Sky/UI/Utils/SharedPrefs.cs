@@ -3,35 +3,35 @@ using System.Collections;
 
 public class SharedPrefs
 {
-	public int GetInt (string key)
+	public static int GetInt (string key)
 	{
 		return GetInt (key,0);
 	}
 
-	public int GetInt (string key,int defaultValue)
+	public static int GetInt (string key,int defaultValue)
 	{
 		return PlayerPrefs.GetInt (key,defaultValue);
 	}
 
 
-	public float GetFloat (string key)
+	public static float GetFloat (string key)
 	{
 		return GetFloat (key,0f);
 	}
 
-	public float GetFloat (string key,float defaultValue)
+	public static float GetFloat (string key,float defaultValue)
 	{
 		return PlayerPrefs.GetFloat (key,defaultValue);
 	}
 
 
-	public string GetString (string key)
+	public static string GetString (string key)
 	{
 		string empty = string.Empty;
 		return GetString (key,string.Empty);
 	}
 
-	public string GetString (string key,string defaultValue)
+	public static string GetString (string key,string defaultValue)
 	{
 		return PlayerPrefs.GetString (key,defaultValue);
 	}

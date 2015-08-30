@@ -14,6 +14,11 @@ public class PlayPanel : UIWindow {
 		PlayGameInstance.INSTANCE.OnPause ();
 	}
 
+	public void OnTouchDown(){
+		PlayGameInstance.INSTANCE.OnTouchDown ();
+		Debug.Log ("On touchDown");
+	}
+
 	void Update () {
 		SetScore (GameData.Instance.MRunningData.Score + "");
 	}

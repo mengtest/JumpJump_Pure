@@ -41,7 +41,7 @@ public class GameController : MonoBehaviour {
 	
 	private void OnGameOver(){
 		gameOverPanel.ShowIn ();
-		gameOverPanel.SetFinalScoreText (GameData.Instance.MRunningData.Score + "");
+		gameOverPanel.SetFinalScoreText (GameData.Instance().M_RunningData.M_Score + "");
 	}
 
 

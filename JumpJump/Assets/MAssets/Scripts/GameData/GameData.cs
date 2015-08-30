@@ -1,17 +1,15 @@
-﻿public class GameData  {
+﻿using LitJson;
+using UnityEngine;
+using System;
+
+public class GameData  {
 
 
-	public static GameData Instance {
-		get{
+	public static GameData Instance() {
 			if(_Instance == null){
 				_Instance = new GameData();
 			}
 			return _Instance;
-		}
-		set
-		{
-			_Instance= value;
-		}
 	}
 	
 	private static GameData _Instance;
@@ -19,49 +17,60 @@
 	private GameData(){
 	}
 
-	public SettingData MSettingData {
+	private static string SETTING_DATA = "SettingData";
+	public SettingData M_SettingData {
 		get{
-			if(_MSettingData == null){
-				_MSettingData = new SettingData();
+			if(m_SettingData == null){
+				m_SettingData = RWData.Load<SettingData>(SETTING_DATA);
 			}
-			return _MSettingData;
+			return m_SettingData;
 		}
 		set
 		{
-			_MSettingData= value;
+			m_SettingData= value;
 		}
 	}
-	private SettingData _MSettingData;
+	private SettingData m_SettingData;
 
+	public void SaveSettingData(){
+		RWData.Save<SettingData> (SETTING_DATA,M_SettingData);
+	}
 
-	public PerpetualData MPerpetualData {
+	private static string PERPETUAL_DATA = "PerpetualData";
+	public PerpetualData M_PerpetualData {
 		get{
-			if(_MPerpetualData == null){
-				_MPerpetualData = new PerpetualData();
+			if(m_PerpetualData == null){
+				m_PerpetualData = RWData.Load<PerpetualData>(PERPETUAL_DATA);
 			}
-			return _MPerpetualData;
+			return m_PerpetualData;
 		}
 		set
 		{
-			_MPerpetualData= value;
+			m_PerpetualData= value;
 		}
 	}
-	private PerpetualData _MPerpetualData;
+	private PerpetualData m_PerpetualData;
+
+	public void SavePerpetualData(){
+		Debug.Log (JsonMapper.ToJson (M_PerpetualData));
+		RWData.Save<PerpetualData> (PERPETUAL_DATA,M_PerpetualData);
+	}
 
 
-
-	public RunningData MRunningData {
+	public RunningData M_RunningData {
 		get{
-			if(_MRunningData == null){
-				_MRunningData = new RunningData();
+			if(m_RunningData == null){
+				m_RunningData = new RunningData();
 			}
-			return _MRunningData;
+			return m_RunningData;
 		}
 		set
 		{
-			_MRunningData= value;
+			m_RunningData= value;
 		}
 	}
-	private RunningData _MRunningData;
+	private RunningData m_RunningData;
+
+
 
 }

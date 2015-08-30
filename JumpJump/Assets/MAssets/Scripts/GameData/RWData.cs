@@ -4,23 +4,16 @@ using LitJson;
 
 public class RWData
 {
-	public RWData ()
-	{
-	}
 	
-	public string ToJsonString ()
+	public static void Save<T> (string prefsKey,T t)
 	{
-		return JsonMapper.ToJson (this);
-	}
-	
-	public void Save (string prefsKey)
-	{
-		PlayerPrefs.SetString(prefsKey,this.ToJsonString());
+		PlayerPrefs.SetString(prefsKey,JsonMapper.ToJson (t));
 	}
 
 	public static T Load<T> (string prefsKey) where T:new()
 	{
 		string sDStr = PlayerPrefs.GetString (prefsKey);
+		Debug.Log (sDStr);
 		if (sDStr != null && sDStr != "")
 			return JsonMapper.ToObject<T> (sDStr);
 		return new T ();

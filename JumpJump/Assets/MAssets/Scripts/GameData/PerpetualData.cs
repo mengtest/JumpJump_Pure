@@ -1,12 +1,18 @@
 ﻿
 public class PerpetualData  {
-	private static string HIGEST_SCORE = "HighestScore";
-	public int HighestScore {
-		get{ 
-			return SharedPrefs.GetInt(HIGEST_SCORE);
-		}
-		set{
-			SharedPrefs.SaveInt(HIGEST_SCORE,value);
-		}
+
+	public int GetHighestScore(){
+		return m_HighestScore;
+	}
+
+	public void SetHighestScore(int value){
+		m_HighestScore = value;
+		Save();
+	}
+
+	public int m_HighestScore = 0;
+
+	private static void Save(){
+		GameData.Instance().SavePerpetualData ();
 	}
 }

@@ -12,14 +12,15 @@ public class PlayPanel : UIWindow {
 	public void OnPause(){
 		GameController.GetInstance ().pausePanel.ShowIn ();
 		PlayGameInstance.INSTANCE.OnPause ();
+		GameData.Instance().M_PerpetualData.SetHighestScore(25);
 	}
 
 	public void OnTouchDown(){
 		PlayGameInstance.INSTANCE.OnTouchDown ();
-		Debug.Log ("On touchDown");
 	}
 
 	void Update () {
-		SetScore (GameData.Instance.MRunningData.Score + "");
+		SetScore (GameData.Instance().M_RunningData.M_Score + "");
+
 	}
 }

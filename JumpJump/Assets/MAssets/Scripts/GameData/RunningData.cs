@@ -2,12 +2,12 @@
 public class RunningData{
 
 
-	public int Score {
+	public int M_Score {
 		get;
 		set;
 	}
 
-	public GameState GameState {
+	public GameState M_GameState {
 		get;
 		set;
 	}

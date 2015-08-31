@@ -15,6 +15,7 @@ public class GameController : MonoBehaviour {
 	{
 		instance = this;
 		Init ();
+		DebuggerUtil.DEBUG_LEVEL = DebuggerUtil.ALL;
 	}
 
 	void Init(){

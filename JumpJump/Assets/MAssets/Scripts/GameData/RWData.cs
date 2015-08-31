@@ -13,7 +13,6 @@ public class RWData
 	public static T Load<T> (string prefsKey) where T:new()
 	{
 		string sDStr = PlayerPrefs.GetString (prefsKey);
-		Debug.Log (sDStr);
 		if (sDStr != null && sDStr != "")
 			return JsonMapper.ToObject<T> (sDStr);
 		return new T ();

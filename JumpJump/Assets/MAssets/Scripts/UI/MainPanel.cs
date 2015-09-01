@@ -3,9 +3,9 @@ using System.Collections;
 
 public class MainPanel : UIWindow {
 	public void Play(){
-		PlayGameInstance.INSTANCE.OnStart ();
-		GameController.GetInstance ().mainPanel.ShowOut ();
-		GameController.GetInstance ().playPanel.ShowIn ();
+		GameController.GetInstance ().GetPlayGameInstance().OnStart ();
+		GameController.GetInstance ().GetMainPanel().ShowOut ();
+		GameController.GetInstance ().GetPlayPanel().ShowIn ();
 	}
 
 }

@@ -3,20 +3,20 @@ using System.Collections;
 
 public class PausePanel : UIWindow {
 	public void OnPlay(){
-		GameController.GetInstance ().pausePanel.ShowOut ();
-		PlayGameInstance.INSTANCE.OnResume ();
+		GameController.GetInstance ().GetPausePanel().ShowOut ();
+		GameController.GetInstance ().GetPlayGameInstance().OnResume ();
 	}
 	
 	public void ToMenuScreen(){
-		GameController.GetInstance ().mainPanel.ShowIn ();
-		GameController.GetInstance ().playPanel.ShowOut ();
-		GameController.GetInstance ().pausePanel.ShowOut ();
+		GameController.GetInstance ().GetMainPanel().ShowIn ();
+		GameController.GetInstance ().GetPlayPanel().ShowOut ();
+		GameController.GetInstance ().GetPausePanel().ShowOut ();
 	}
 
 	public void OnRestart(){
-		GameController.GetInstance ().pausePanel.ShowOut ();
-		PlayGameInstance.INSTANCE.OnResume ();
-		PlayGameInstance.INSTANCE.OnReStart ();
+		GameController.GetInstance ().GetPausePanel().ShowOut ();
+		GameController.GetInstance ().GetPlayGameInstance().OnResume ();
+		GameController.GetInstance ().GetPlayGameInstance().OnReStart ();
 	}
 
 }

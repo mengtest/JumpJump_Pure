@@ -10,12 +10,12 @@ public class PlayPanel : UIWindow {
 	}
 
 	public void OnPause(){
-		GameController.GetInstance ().pausePanel.ShowIn ();
-		PlayGameInstance.INSTANCE.OnPause ();
+		GameController.GetInstance ().GetPausePanel().ShowIn ();
+		GameController.GetInstance ().GetPlayGameInstance().OnPause ();
 	}
 
 	public void OnTouchDown(){
-		PlayGameInstance.INSTANCE.OnTouchDown ();
+		GameController.GetInstance ().GetPlayGameInstance().OnTouchDown ();
 	}
 
 	void Update () {

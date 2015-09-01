@@ -3,12 +3,13 @@ using System.Collections;
 
 public class DebuggerUtil : MonoBehaviour {
 
-	public const  int ALL = 0;
+	public const int ALL = 0;
 	public const int DEBUG =1;
 	public const int INFO =2;
 	public const int WARN =3;
-	public const int ERROR =4;
-	public const int FATAL =5;
+	public const int EXCEPTION = 4;
+	public const int ERROR =5;
+	public const int FATAL =6;
 	public const int OFF = 100;
 	
 	static public int DEBUG_LEVEL = ALL;
@@ -46,6 +47,18 @@ public class DebuggerUtil : MonoBehaviour {
 		if(WARN>=DEBUG_LEVEL)
 		{
 			Debug.LogWarning(message,context);
+		}
+	}
+
+	static public void LogException(System.Exception exception)
+	{
+		LogException(exception,null);
+	}
+	static public void LogException(System.Exception exception, Object context)
+	{
+		if(EXCEPTION>=DEBUG_LEVEL)
+		{
+			Debug.LogException(exception,context);
 		}
 	}
 	

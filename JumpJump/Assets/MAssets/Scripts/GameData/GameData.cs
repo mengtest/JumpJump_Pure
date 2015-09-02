@@ -67,7 +67,6 @@ public class GameData
 	
 	public void SavePerpetualData ()
 	{
-		Debug.Log (JsonMapper.ToJson (M_PerpetualData));
 		RWData.Save<PerpetualData> (PerpetualData.PREFSKEY, M_PerpetualData);
 	}
 

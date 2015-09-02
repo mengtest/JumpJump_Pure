@@ -15,7 +15,7 @@ public class GameController : MonoBehaviour {
 	{
 		instance = this;
 		Init ();
-		DebuggerUtil.DEBUG_LEVEL = DebuggerUtil.ALL;
+		DebuggerUtil.DEBUG_LEVEL = DebuggerUtil.DebugLevel.ALL;
 	}
 
 	void Init(){
@@ -25,7 +25,7 @@ public class GameController : MonoBehaviour {
 		pausePanel = transform.GetComponentInChildren<PausePanel> ();
 		gameOverPanel = transform.GetComponentInChildren<GameOverPanel> ();
 
-//		mainPanel.gameObject.SetActive (true);
+		mainPanel.gameObject.SetActive (true);
 		playPanel.gameObject.SetActive (false);
 		pausePanel.gameObject.SetActive (false);
 		gameOverPanel.gameObject.SetActive (false);

@@ -3,16 +3,18 @@ using System.Collections;
 
 public class DebuggerUtil : MonoBehaviour {
 
-	public const int ALL = 0;
-	public const int DEBUG =1;
-	public const int INFO =2;
-	public const int WARN =3;
-	public const int EXCEPTION = 4;
-	public const int ERROR =5;
-	public const int FATAL =6;
-	public const int OFF = 100;
-	
-	static public int DEBUG_LEVEL = ALL;
+	public enum DebugLevel  {
+		ALL = 0,
+		DEBUG =1,
+		INFO =2,
+		WARN =3,
+		EXCEPTION = 4,
+		ERROR =5,
+		FATAL =6,
+		OFF = 100
+	}
+
+	static public DebugLevel DEBUG_LEVEL = DebugLevel.ALL;
 	
 	static public void Log(object message)
 	{
@@ -20,7 +22,7 @@ public class DebuggerUtil : MonoBehaviour {
 	}
 	static public void Log(object message, Object context)
 	{
-		if(DEBUG>=DEBUG_LEVEL)
+		if(DebugLevel.DEBUG>=DEBUG_LEVEL)
 		{
 			Debug.Log(message,context);
 		}
@@ -32,7 +34,7 @@ public class DebuggerUtil : MonoBehaviour {
 	}
 	static public void LogInfo(object message, Object context)
 	{
-		if(INFO>=DEBUG_LEVEL)
+		if(DebugLevel.INFO>=DEBUG_LEVEL)
 		{
 			Debug.Log(message,context);
 		}
@@ -44,7 +46,7 @@ public class DebuggerUtil : MonoBehaviour {
 	}
 	static public void LogWarning(object message, Object context)
 	{
-		if(WARN>=DEBUG_LEVEL)
+		if(DebugLevel.WARN>=DEBUG_LEVEL)
 		{
 			Debug.LogWarning(message,context);
 		}
@@ -56,7 +58,7 @@ public class DebuggerUtil : MonoBehaviour {
 	}
 	static public void LogException(System.Exception exception, Object context)
 	{
-		if(EXCEPTION>=DEBUG_LEVEL)
+		if(DebugLevel.EXCEPTION>=DEBUG_LEVEL)
 		{
 			Debug.LogException(exception,context);
 		}
@@ -69,7 +71,7 @@ public class DebuggerUtil : MonoBehaviour {
 	}
 	static public void LogError(object message, Object context)
 	{
-		if(ERROR>=DEBUG_LEVEL)
+		if(DebugLevel.ERROR>=DEBUG_LEVEL)
 		{
 			Debug.LogError(message,context);
 		}
@@ -81,7 +83,7 @@ public class DebuggerUtil : MonoBehaviour {
 	}
 	static public void LogFatal(object message, Object context)
 	{
-		if(FATAL>=DEBUG_LEVEL)
+		if(DebugLevel.FATAL>=DEBUG_LEVEL)
 		{
 			Debug.LogError(message,context);
 		}

@@ -29,14 +29,11 @@ public class PlayerController : MonoBehaviour
 
 	void OnCollisionEnter (Collision collsion)
 	{	
-		rb.velocity = v;
-		jumpTimes = 0;
-		DynamicBrick db = collsion.gameObject.GetComponent<DynamicBrickController> ().DB;
-		rd.material.color = db.BColor.C;
-
-//		PlaySceneController.instance.BM.GetLeaveBricks(db);
-
-		PlayGameInstance.INSTANCE.PSC.BM.GetLeaveBricks (db);
+//		rb.velocity = v;
+//		jumpTimes = 0;
+//		DynamicBrick db = collsion.gameObject.GetComponent<DynamicBrickController> ().DB;
+//		rd.material.color = db.BColor.C;
+//		PlayGameInstance.INSTANCE.PSC.BM.GetLeaveBricks (db);
 
 	}
 

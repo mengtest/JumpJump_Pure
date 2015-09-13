@@ -16,12 +16,27 @@ public class PlaySceneController : MonoBehaviour
 		get { return pC;}
 	}
 
+
+	BlockManager m_BlockMgr;
+	
+	public BlockManager M_BlockMgr {
+		get {
+			return m_BlockMgr;
+		}
+	}
+
+
+
+
 	void Awake ()
 	{
 //		instance = this;
 		bM = this.gameObject.GetComponentInChildren<BrickManager> ();
 		pC = this.gameObject.GetComponentInChildren<PlayerController> ();
 		pC.gameObject.SetActive (false);
+
+		m_BlockMgr=this.gameObject.GetComponentInChildren<BlockManager> ();
+
 		PlayGameInstance.INSTANCE=new PlayGameInstance(this);
 	}
 
@@ -95,6 +110,8 @@ public class PlaySceneController : MonoBehaviour
 		time=0;
 		ShowedPlayer=false;
 		BM.Reset();
+		pC.gameObject.SetActive (false);
+		pC.transform.localPosition=new Vector3(0,4,0);
 	}
 
 	public void OnGameOver ()

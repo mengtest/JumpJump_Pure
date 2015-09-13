@@ -21,7 +21,6 @@ public class PlayGameInstance:IPlayGame
 	public OnGameResult_Delegate  OnGameResultDelegate;
 
 
-
 	public void OnGameResult ()
 	{
 		OnPause();

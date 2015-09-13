@@ -4,9 +4,9 @@ using System.Collections.Generic;
 
 public  class ObjectPool<T> where T :IPoolable
 {
-	int initSize = 20;
-	int addSize = 10;
-	List<T> objects;
+	int m_InitSize = 20;
+	int m_AddSize = 10;
+	List<T> m_Objects;
 
 	public delegate  T CreateObject ();
 
@@ -14,31 +14,31 @@ public  class ObjectPool<T> where T :IPoolable
 	
 	public ObjectPool (int initSize, int addSize)
 	{
-		this.initSize = initSize;
-		this.addSize = addSize;
-		objects = new List<T> ();
+		this.m_InitSize = initSize;
+		this.m_AddSize = addSize;
+		m_Objects = new List<T> ();
 	}
 
 	public void Init(){
-		InitSize(initSize);
+		InitSize(m_InitSize);
 	}
 
 	void InitSize (int size)
 	{
 		for (int i=0; i<size; i++) {
 			T t = NewObject ();
-			objects.Add (t);
+			m_Objects.Add (t);
 		}
 	}
 	
 	public T Obtain ()
 	{
-		if (objects.Count < 1) {
-			InitSize (addSize);
+		if (m_Objects.Count < 1) {
+			InitSize (m_AddSize);
 		}
-		int index = objects.Count - 1;
-		T t = objects [index];
-		objects.RemoveAt (index);
+		int index = m_Objects.Count - 1;
+		T t = m_Objects [index];
+		m_Objects.RemoveAt (index);
 		((IPoolable)t).Reset ();
 		return t;
 	}
@@ -46,22 +46,22 @@ public  class ObjectPool<T> where T :IPoolable
 	public void Free (T t)
 	{
 		t.Reset ();
-		objects.Add (t);
+		m_Objects.Add (t);
 	}
 	
 	public void DestoryAll ()
 	{
 	
-		for (int i=0; i<objects.Count; i++) {
-			objects [i].Destory ();
+		for (int i=0; i<m_Objects.Count; i++) {
+			m_Objects [i].Destory ();
 		}
-		objects.Clear ();
+		m_Objects.Clear ();
 	}
 	
 	public void ResetAll ()
 	{
-		for (int i=0; i<objects.Count; i++) {
-			objects [i].Reset ();
+		for (int i=0; i<m_Objects.Count; i++) {
+			m_Objects [i].Reset ();
 		}
 	}
 	

@@ -10,14 +10,14 @@ public class GameOverPanel : UIWindow {
 	}
 
 	public void ToMenuScreen(){
-		GameController.GetInstance ().mainPanel.ShowIn ();
-		GameController.GetInstance ().playPanel.ShowOut ();
-		GameController.GetInstance ().gameOverPanel.ShowOut ();
+		GameController.GetInstance ().GetMainPanel().ShowIn ();
+		GameController.GetInstance ().GetPlayPanel().ShowOut ();
+		GameController.GetInstance ().GetGameOverPanel().ShowOut ();
 	}
 	
 	public void OnRestart(){
-		GameController.GetInstance ().gameOverPanel.ShowOut ();
-		PlayGameInstance.INSTANCE.OnResume ();
-		PlayGameInstance.INSTANCE.OnReStart ();
+		GameController.GetInstance ().GetGameOverPanel().ShowOut ();
+		GameController.GetInstance ().GetPlayGameInstance().OnResume ();
+		GameController.GetInstance ().GetPlayGameInstance().OnReStart ();
 	}
 }

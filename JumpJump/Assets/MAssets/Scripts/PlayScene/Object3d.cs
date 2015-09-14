@@ -2,6 +2,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 
 public class Object3d
 {
@@ -37,7 +38,7 @@ public class Object3d
 		}
 		set {
 			m_Loc_StartPot = value;
-			UpdateWorldPot();
+			UpdateWorldPot ();
 		}
 	}
 
@@ -49,7 +50,7 @@ public class Object3d
 		}
 		set {
 			m_Loc_EndPot = value;
-			UpdateWorldPot();
+			UpdateWorldPot ();
 		}
 	}
 
@@ -61,8 +62,15 @@ public class Object3d
 		}
 		set {
 			m_Loc_CurPot = value;
-			UpdateWorldPot();
+			UpdateWorldPot ();
 		}
+	}
+
+	public Tweener DoPosition (Vector3 endValue, float duration,float delay=0)
+	{
+		return DOTween.To (() => this.m_Loc_CurPot, delegate (Vector3 x) {
+			this.m_Loc_CurPot = x;
+		}, endValue, duration).SetDelay(delay).SetTarget (this);
 	}
 
 	public Object3d ()
@@ -70,11 +78,13 @@ public class Object3d
 
 	}
 
-	public virtual void UpdateWorldPot(){
+	public virtual void UpdateWorldPot ()
+	{
 
 	}
 
-	public virtual void UpdateLocPot(){
+	public virtual void UpdateLocPot ()
+	{
 	}
 
 

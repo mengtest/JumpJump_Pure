@@ -109,7 +109,6 @@ public class SkyBaseAnimationNormal : SkyAction
 	{
 		Tweener tw = null;
 		tw = runDelayTime (delayTime, delayTime);
-		tw.SetTarget (delayTime);
 		tw.OnComplete (skyAnicallBack.OnCompleteMethod);
 	}
 

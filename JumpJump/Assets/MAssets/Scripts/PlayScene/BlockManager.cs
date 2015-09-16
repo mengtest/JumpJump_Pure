@@ -59,15 +59,15 @@ public class BlockManager : MonoBehaviour
 		Vector3 endPot=Vector3.one*5f;
 
 		Block b=new H_Block(null,BlockType.H,4,startPot,endPot,5f,
-		                    Block.GetDiriction(startPot,endPot),new Vector3[]{
-			new Vector3(-5,0,0),new Vector3(-5,0,0),new Vector3(-5,0,0),new Vector3(-3,0,0)
+		                    0.5f,new Vector3[]{
+			new Vector3(-5,0,0),new Vector3(-5,0,0),new Vector3(-5,0,0),new Vector3(-5,0,0)
 		});
 		m_Blocks.Add(b);
 
 		startPot=new Vector3(6,0,0);
 		endPot=new Vector3(8,0,0);
 		b=new H_Block(null,BlockType.H,2,startPot,endPot,6f,
-		              Block.GetDiriction(startPot,endPot),null);
+		              0.5f,null);
 		m_Blocks.Add(b);
 
 	}

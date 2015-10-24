@@ -131,7 +131,7 @@ public class DynamicBrick :IPoolable
 		this.go.transform.localPosition = Vector3 .Lerp (initPot, targetPot, Mathf.Clamp (moveTime / maxMovetime, 0f, 1f));
 	}
 	
-	public void Reset ()
+	public void IReset ()
 	{
 		time = 0;
 		delayTime = 0;
@@ -145,7 +145,7 @@ public class DynamicBrick :IPoolable
 		
 	}
 
-	public void Destory ()
+	public void IDestory ()
 	{
 		if (go != null) {
 			GameObject.Destroy (go);

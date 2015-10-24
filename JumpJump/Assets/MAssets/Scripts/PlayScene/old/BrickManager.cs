@@ -158,7 +158,7 @@ public class BrickManager : MonoBehaviour
 
 	void SetLeave (DynamicBrick db, int leaveCount)
 	{
-		db.Reset ();
+		db.IReset ();
 		db.Comming = false;
 		db.DelayTime = leaveCount * delayTime_Cell * 5f;
 		db.LeastFrame = leaveCount;

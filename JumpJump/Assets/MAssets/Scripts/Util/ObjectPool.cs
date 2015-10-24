@@ -39,13 +39,13 @@ public  class ObjectPool<T> where T :IPoolable
 		int index = m_Objects.Count - 1;
 		T t = m_Objects [index];
 		m_Objects.RemoveAt (index);
-		((IPoolable)t).Reset ();
+		((IPoolable)t).IReset ();
 		return t;
 	}
 	
 	public void Free (T t)
 	{
-		t.Reset ();
+		t.IReset ();
 		m_Objects.Add (t);
 	}
 	
@@ -53,7 +53,7 @@ public  class ObjectPool<T> where T :IPoolable
 	{
 	
 		for (int i=0; i<m_Objects.Count; i++) {
-			m_Objects [i].Destory ();
+			m_Objects [i].IDestory ();
 		}
 		m_Objects.Clear ();
 	}
@@ -61,7 +61,7 @@ public  class ObjectPool<T> where T :IPoolable
 	public void ResetAll ()
 	{
 		for (int i=0; i<m_Objects.Count; i++) {
-			m_Objects [i].Reset ();
+			m_Objects [i].IReset ();
 		}
 	}
 	
@@ -69,7 +69,7 @@ public  class ObjectPool<T> where T :IPoolable
 
 public interface IPoolable
 {
-	void Reset ();
+	void IReset ();
 
-	void  Destory ();
+	void  IDestory ();
 }

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class GameController : MonoBehaviour {
@@ -37,6 +37,7 @@ public class GameController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+//		PlayGameInstance_old.INSTANCE.OnGameResultDelegate += OnGameOver;
 		PlayGameInstance.INSTANCE.OnGameResultDelegate += OnGameOver;
 	}
 	
@@ -44,6 +45,10 @@ public class GameController : MonoBehaviour {
 	void Update () {
 	
 	}
+
+//	public PlayGameInstance_old GetPlayGameInstance(){
+//		return PlayGameInstance_old.INSTANCE;
+//	}
 
 	public PlayGameInstance GetPlayGameInstance(){
 		return PlayGameInstance.INSTANCE;

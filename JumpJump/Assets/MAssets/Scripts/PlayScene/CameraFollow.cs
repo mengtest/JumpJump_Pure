@@ -84,7 +84,7 @@ public class CameraFollow : MonoBehaviour
 		}
 	}
 
-	float m_Dy_Camera_Target = 0;
+	public	float m_Fix_Height = 0;
 	float m_AdjustWindow_ToUpDst_Ratio = 0.2f;
 	float m_AdjustWindow_ToDownDst_Ratio = 0.2f;
 	bool m_Adjusting;
@@ -96,7 +96,7 @@ public class CameraFollow : MonoBehaviour
 		float screenHeight = UnityEngine.Screen.height;
 		if (screenPot.y < screenHeight * m_AdjustWindow_ToDownDst_Ratio 
 			|| screenPot.y > screenHeight * (1 - m_AdjustWindow_ToUpDst_Ratio)) {
-			m_Adjust_WantedHeight = m_target.position.y + m_Dy_Camera_Target;
+			m_Adjust_WantedHeight = m_target.position.y + m_Fix_Height;
 			m_Adjusting = true;
 		} else {
 			m_Adjusting = false;
@@ -105,7 +105,7 @@ public class CameraFollow : MonoBehaviour
 
 	void Init ()
 	{
-		m_Dy_Camera_Target = transform.position.y - m_target.position.y;
+//		m_Dy_Camera_Target = transform.position.y - m_target.position.y;
 
 	}
 

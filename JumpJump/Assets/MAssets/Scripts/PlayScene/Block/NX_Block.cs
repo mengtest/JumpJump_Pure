@@ -40,6 +40,7 @@ public class NX_Block:Block
 	public override void SetBrickMoveInParam ()
 	{
 		if (m_Bricks.Count > 0 && HasMoveInCondition ()) {
+			m_Bricks.Sort (SortByLeft);
 			int moveDirection = Object3d.GetDiriction (M_MoveSpan, Vector3.zero);
 			float t = Get_MoveIn_Duration () / m_Bricks.Count;
 			for (int i=0; i<m_Bricks.Count; i++) {

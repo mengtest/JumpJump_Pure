@@ -5,6 +5,7 @@ public class PlayerController : MonoBehaviour
 {
 
 	public Vector3 moveSpeed = new Vector3 (3, 0, 0);
+	Vector3 m_InitMoveSpeed;
 	Rigidbody m_rigidbody;
 	bool m_OnGround = false;
 	SphereCollider m_sphereCollider;
@@ -26,6 +27,7 @@ public class PlayerController : MonoBehaviour
 		m_rigidbody.angularVelocity = Vector3.right * 0.1f;
 
 		Physics.gravity = m_Gravity;
+		m_InitMoveSpeed = moveSpeed;
 	}
 	
 	// Update is called once per frame
@@ -50,8 +52,10 @@ public class PlayerController : MonoBehaviour
 	void OnCollisionEnter (Collision collsion)
 	{	
 		CheckFaild (collsion);
-		m_OnGround=true;
+		m_OnGround = true;
 		m_JumpTimes = 0;
+		OnFunction (collsion);
+
 	}
 
 	void OnCollisionStay (Collision collsion)
@@ -60,13 +64,17 @@ public class PlayerController : MonoBehaviour
 		m_OnGround = true;
 	}
 
-	void OnCollsionExit(Collision collsion){
-
+	void OnCollisionExit (Collision collsion)
+	{
+		Brick brick = collsion.gameObject.GetComponent<Brick> ();
+		if (brick != null) {
+			brick.M_IsPlayerCollideExit = true;
+		}
 	}
 	
 	public void OnTouchDown ()
 	{
-		if ( m_JumpTimes < m_MaxJumpTimes) {
+		if (m_JumpTimes < m_MaxJumpTimes) {
 
 			m_rigidbody.AddForce (Vector3.up * moveSpeed.y, ForceMode.VelocityChange);
 			m_JumpTimes++;
@@ -118,6 +126,7 @@ public class PlayerController : MonoBehaviour
 		transform.position = m_InitPot;
 		transform.rotation = Quaternion.Euler (m_InitRotate);
 		m_OnGround = false;
+		SetEmptyFunction();
 
 	}
 
@@ -129,6 +138,33 @@ public class PlayerController : MonoBehaviour
 	public bool TriggerBlockMoveIn_ArriveTime (Object3d o3d)
 	{
 		return moveSpeed.x * o3d.Get_MoveIn_ArriveTime () >= o3d.transform.position.x - transform.position.x;
+	}
+
+	public bool TriggerBlockMoveOut_LeaveTime (Object3d o3d)
+	{
+		return moveSpeed.x * o3d.Get_MoveOut_LeaveTime () <= transform.position.x - o3d.M_Max_EndX;
+	}
+
+	void OnFunction (Collision collsion)
+	{
+		Brick brick = collsion.gameObject.GetComponent<Brick> ();
+		if (brick != null) {
+			switch (brick.M_FunctionType) {
+			case FunctionType.EMPTY:
+				break;
+			case FunctionType.REMOVE:
+				SetEmptyFunction ();
+				break;
+			case FunctionType.JUMP_HEIGHTER:
+				moveSpeed.y = m_InitMoveSpeed.y * 1.2f;
+				break;
+			}
+		}
+	}
+
+	void SetEmptyFunction ()
+	{
+		moveSpeed = m_InitMoveSpeed;
 	}
 	
 }

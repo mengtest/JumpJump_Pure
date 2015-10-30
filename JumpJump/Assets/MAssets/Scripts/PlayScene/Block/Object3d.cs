@@ -263,7 +263,7 @@ public class Object3d :MonoBehaviour
 	#region editor
 	public  bool Update_Editor ()
 	{
-		bool change=ListenerParentChange ();
+		bool change = ListenerParentChange ();
 		Vector3 pot = transform.localPosition;
 		M_Loc_StartPot = pot;
 		UpdateWorldPot ();
@@ -271,7 +271,8 @@ public class Object3d :MonoBehaviour
 	}
 
 	[SerializeField]
-	 Transform oldParent;
+	Transform
+		oldParent;
 
 	bool ListenerParentChange ()
 	{
@@ -327,6 +328,8 @@ public class Object3d :MonoBehaviour
 	
 
 	#region condition
+
+	#region move active
 	[SerializeField]
 	MoveActiveConditionType
 		m_MoveActiveConditionType = MoveActiveConditionType.PARENT_MOVE_OVER;
@@ -343,8 +346,28 @@ public class Object3d :MonoBehaviour
 			else
 				MoveActiveCondition = null;
 			break;
+		case MoveActiveConditionType.PLAYER_COLLIDE_EXIT:
+			MoveActiveCondition = IsPlayerCollideExit;
+
+			break;
 
 		}
+	}
+
+	bool m_IsPlayerCollideExit = false;
+
+	public bool M_IsPlayerCollideExit {
+		get {
+			return m_IsPlayerCollideExit;
+		}
+		set {
+			m_IsPlayerCollideExit = value;
+		}
+	}
+
+	bool IsPlayerCollideExit ()
+	{
+		return m_IsPlayerCollideExit;
 	}
 
 	public MoveActiveConditionType M_MoveActiveConditionType {
@@ -372,6 +395,10 @@ public class Object3d :MonoBehaviour
 	{
 
 	}
+
+	#endregion
+
+	#region active
 
 	public virtual void ActiveMove ()
 	{
@@ -447,6 +474,9 @@ public class Object3d :MonoBehaviour
 		}
 	}
 
+    #endregion
+
+	#region move in
 	public delegate_ActiveCondition MoveIn_Condition;
 	[SerializeField]
 	MoveIn_ConditionType
@@ -474,7 +504,8 @@ public class Object3d :MonoBehaviour
 		}
 	}
 
-	public float Get_MoveIn_ArriveTime(){
+	public float Get_MoveIn_ArriveTime ()
+	{
 		return PlayGameInstance.INSTANCE.PSC.ConditionTime_Unit * m_MoveIn_ArriveTime;
 	}
 
@@ -531,15 +562,6 @@ public class Object3d :MonoBehaviour
 		}
 	}
 
-	public delegate_ActiveCondition MoveOut_Condition;
-
-	public void Init_Condition ()
-	{
-		Init_MoveActiveCondition ();
-		Init_ActiveCondition ();
-		Init_MoveIn_Condition ();
-	}
-
 	public virtual bool IsMoveInOver ()
 	{
 		return Vector3.SqrMagnitude (M_Loc_CurPot - M_Loc_StartPot) < 0.01f * 0.01f;
@@ -562,7 +584,8 @@ public class Object3d :MonoBehaviour
 	}
 
 	[SerializeField]
-	int m_MoveIn_Delay=1;
+	int
+		m_MoveIn_Delay = 1;
 
 	public int M_MoveIn_Delay {
 		get {
@@ -572,8 +595,10 @@ public class Object3d :MonoBehaviour
 			m_MoveIn_Delay = value;
 		}
 	}
-	public float Get_MoveIn_DelayTime(){
-		return PlayGameInstance.INSTANCE.PSC.moveDelayTime_Unit*m_MoveIn_Delay;
+
+	public float Get_MoveIn_DelayTime ()
+	{
+		return PlayGameInstance.INSTANCE.PSC.moveDelayTime_Unit * m_MoveIn_Delay;
 	}
 
 	protected	bool m_MoveIn = false;
@@ -581,11 +606,280 @@ public class Object3d :MonoBehaviour
 
 	public virtual void StartMoveIn ()
 	{
-//		DoPosition (m_Loc_StartPot, m_MoveIn_Duration_Time, m_MoveIn_DelayTime+Get_MoveIn_DelayTime()).Restart ();
-//		Debug.Log("deyla="+(m_MoveIn_DelayTime+Get_MoveIn_DelayTime())+"  dd="+m_MoveIn_Delay);
-		DoPosition (m_Loc_StartPot, m_MoveIn_Duration_Time, m_MoveIn_DelayTime+m_Parent. Get_MoveIn_DelayTime()).Restart ();
+		DoPosition (m_Loc_StartPot, m_MoveIn_Duration_Time, m_MoveIn_DelayTime + m_Parent.Get_MoveIn_DelayTime ()).Restart ();
 	}
 
+	#endregion
+
+	#region move out
+	
+	public delegate_ActiveCondition MoveOut_Condition;
+	[SerializeField]
+	MoveOut_ConditionType
+		m_MoveOut_CT = MoveOut_ConditionType.EMPTY;
+	
+	public MoveOut_ConditionType M_MoveOut_CT {
+		get {
+			return m_MoveOut_CT;
+		}
+		set {
+			m_MoveOut_CT = value;
+		}
+	}
+
+	[SerializeField]
+	int
+		m_MoveOut_LeaveTime = 1;
+	
+	public int M_MoveOut_LeaveTime {
+		get {
+			return m_MoveOut_LeaveTime;
+		}
+		set {
+			m_MoveOut_LeaveTime = value;
+		}
+	}
+	
+	public float Get_MoveOut_LeaveTime ()
+	{
+		return PlayGameInstance.INSTANCE.PSC.ConditionTime_Unit * m_MoveOut_LeaveTime;
+	}
+	
+	[SerializeField]
+	int
+		m_MoveOut_Duration = 1;// all the bricks of block time
+	
+	public int M_MoveOut_Duration {
+		get {
+			return m_MoveOut_Duration;
+		}
+		set {
+			m_MoveOut_Duration = value;
+		}
+	}
+	
+	public float Get_MoveOut_Duration ()
+	{
+		return  PlayGameInstance.INSTANCE.PSC.moveDurationTime_Unit * m_MoveOut_Duration;
+	}
+	
+	float m_MoveOut_Duration_Time = 0f;
+	
+	public float M_MoveOut_Duration_Time {
+		get {
+			return m_MoveOut_Duration_Time;
+		}
+		set {
+			m_MoveOut_Duration_Time = value;
+		}
+	}
+	
+	[SerializeField]
+	Vector3
+		m_MoveOut_Span = Vector3.zero;
+	
+	public Vector3 M_MoveOut_Span {
+		get {
+			return m_MoveOut_Span;
+		}
+		set {
+			m_MoveOut_Span = value;
+		}
+	}
+	
+	void Init_MoveOut_Condition ()
+	{
+		switch (m_MoveOut_CT) {
+		case MoveOut_ConditionType.EMPTY:
+			break;
+		case MoveOut_ConditionType.TARGET_LEAVE_TIME:
+			MoveOut_Condition = PlayGameInstance.INSTANCE.PSC.PC.TriggerBlockMoveOut_LeaveTime;
+			break;
+		}
+	}
+
+	Vector3 m_MoveOut_Loc_EndPot;
+
+	public Vector3 M_MoveOut_Loc_EndPot {
+		get {
+			return m_MoveOut_Loc_EndPot;
+		}
+		set {
+			m_MoveOut_Loc_EndPot = value;
+		}
+	}
+	
+	public virtual bool IsMoveOutOver ()
+	{
+		return Vector3.SqrMagnitude (M_Loc_CurPot - m_MoveOut_Loc_EndPot) < 0.01f * 0.01f;
+	}
+	
+	public bool HasMoveOutCondition ()
+	{
+		return m_MoveOut_CT != MoveOut_ConditionType.EMPTY;
+	}
+	
+	[SerializeField]
+	int
+		m_MoveOut_Delay = 1;
+	
+	public int M_MoveOut_Delay {
+		get {
+			return m_MoveOut_Delay;
+		}
+		set {
+			m_MoveOut_Delay = value;
+		}
+	}
+	
+	public float Get_MoveOut_DelayTime ()
+	{
+		return PlayGameInstance.INSTANCE.PSC.moveDelayTime_Unit * m_MoveOut_Delay;
+	}
+
+	float m_MoveOut_DelayTime = 0f;
+	
+	public float M_MoveOut_DelayTime {
+		get {
+			return m_MoveOut_DelayTime;
+		}
+		set {
+			m_MoveOut_DelayTime = value;
+		}
+	}
+	
+	protected	bool m_MoveOut = false;
+	protected   bool m_MoveOut_Overed = false;
+	
+	public virtual void StartMoveOut ()
+	{
+		DoPosition (m_MoveOut_Loc_EndPot, m_MoveOut_Duration_Time, m_MoveOut_DelayTime + m_Parent.Get_MoveOut_DelayTime ()).Restart ();
+	}
+
+	#endregion
+
+
+	public void Init_Condition ()
+	{
+		Init_MoveActiveCondition ();
+		Init_ActiveCondition ();
+		Init_MoveIn_Condition ();
+		Init_MoveOut_Condition ();
+	}
+	#endregion
+
+
+
+	#region boundary
+
+	protected float m_Min_StartX = Mathf.Infinity;
+	
+	public float M_Min_StartX {
+		get {
+			return m_Min_StartX;
+		}
+	}
+	
+	protected float m_Max_StartX = Mathf.NegativeInfinity;
+	
+	public float M_Max_StartX {
+		get {
+			return m_Max_StartX;
+		}
+	}
+	
+	protected float m_Min_EndX = Mathf.Infinity;
+	
+	public float M_Min_EndX {
+		get {
+			return m_Min_EndX;
+		}
+	}
+	
+	protected float m_Max_EndX = Mathf.NegativeInfinity;
+	
+	public float M_Max_EndX {
+		get {
+			return m_Max_EndX;
+		}
+	}
+
+	#endregion
+
+
+	#region sort
+	public static int SortByLeft (Object3d o1, Object3d o2)
+	{
+		if (o1 == null) {
+			if (o2 == null)
+				return 0;
+			return 1;
+		}
+		if (o2 == null)
+			return -1;
+		int r = o1.M_Loc_CurPot.x .CompareTo (o2.M_Loc_CurPot.x);
+		return r;
+		
+	}
+	
+	public static int SortByBottom (Object3d o1, Object3d o2)
+	{
+		if (o1 == null) {
+			if (o2 == null)
+				return 0;
+			return 1;
+		}
+		if (o2 == null)
+			return -1;
+		int r = o1.M_Loc_CurPot.y .CompareTo (o2.M_Loc_CurPot.y);
+		return r;
+		
+	}
+
+	#endregion
+
+	#region function
+
+	[SerializeField]
+	FunctionType
+		m_FunctionType = FunctionType.EMPTY;
+
+	public FunctionType M_FunctionType {
+		get {
+			return m_FunctionType;
+		}
+		set {
+			m_FunctionType = value;
+			_ChangeFunction ();
+		}
+	}
+
+	FunctionType m_Old_FunctionType;
+
+	public FunctionType M_Old_FunctionType {
+		get {
+			return m_Old_FunctionType;
+		}
+		set {
+			m_Old_FunctionType = value;
+		}
+	}
+
+	public virtual void _ChangeFunction ()
+	{
+		switch (m_FunctionType) {
+		case FunctionType.EMPTY:
+			GetComponent<Renderer> ().material = ResourceMgr.Instance ().brickMtls [0];
+			break;
+		case FunctionType.REMOVE:
+			GetComponent<Renderer> ().material = ResourceMgr.Instance ().brickMtls [1];
+			break;
+		case FunctionType.JUMP_HEIGHTER:
+			GetComponent<Renderer> ().material = ResourceMgr.Instance ().brickMtls [2];
+			break;
+			
+		}
+	}
 
 	#endregion
 
@@ -610,8 +904,12 @@ public class Object3d :MonoBehaviour
 		M_Loc_CurPot = M_Loc_StartPot;
 		UpdateWorldPot ();
 
-		m_MoveIn=false;
-		m_MoveIn_Overed=false;
+		m_MoveIn = false;
+		m_MoveIn_Overed = false;
+		m_IsPlayerCollideExit = false;
+
+		m_MoveOut = false;
+		m_MoveOut_Overed = false;
 
 	
 	}
@@ -624,6 +922,7 @@ public enum MoveActiveConditionType
 {
 	EMPTY=0,
 	PARENT_MOVE_OVER=1,
+	PLAYER_COLLIDE_EXIT=2
 }
 
 public enum ActiveConditionType
@@ -644,7 +943,17 @@ public enum MoveOut_ConditionType
 	TARGET_LEAVE_TIME=1,
 }
 
-
+public enum FunctionType
+{
+	NONE=-1,
+	EMPTY=0,
+	REMOVE=1,
+	JUMP_HEIGHTER=2,
+	JUMP_TWICES=3,
+	SPEED_UP=4,
+	SPEED_DOWN=5,
+	UNBEATABLE=6
+}
 
 
 

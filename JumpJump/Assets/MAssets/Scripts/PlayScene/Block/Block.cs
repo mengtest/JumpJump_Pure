@@ -85,18 +85,13 @@ public class Block : Object3d , IPoolable
 	public void OnUpdate ()
 	{
 
-		if (HasMoveInCondition () && m_Bricks.Count > 0) {
-			if (!m_MoveIn) {
-				if (MoveIn_Condition (this))
-					StartMoveIn ();
-			}
-			if (!IsMoveInOver () && !m_MoveIn_Overed)
-				return;
-		}
+		if (CheckMoveIn ())
+			return;
 		CheckActive ();
 		if (!M_Active)
 			return;
 		CheckMoveActive ();
+		CheckMoveOut ();
 		UpdateSelf ();
 		UpdateChild ();
 	}
@@ -117,13 +112,32 @@ public class Block : Object3d , IPoolable
 		}
 	}
 
+	bool CheckMoveIn ()
+	{
+		if (HasMoveInCondition () && m_Bricks.Count > 0) {
+			if (!m_MoveIn && MoveIn_Condition (this)) {
+				StartMoveIn ();
+			}
+			if (!IsMoveInOver () && !m_MoveIn_Overed)
+				return true;
+		}
+		return false;
+	}
+
+	void CheckMoveOut ()
+	{
+		if (HasMoveOutCondition () && m_Bricks.Count > 0) {
+			if (!m_MoveOut && MoveOut_Condition (this)) {
+				StartMoveOut ();
+			}
+		}
+	}
+
 	public override void CheckActive_Child ()
 	{
 		if (M_Active) { 
 			for (int i=0; i<m_Bricks.Count; i++) {
-//				Debug.Log (" check.........brick active..************* " + (m_Bricks [i] == null));
 				m_Bricks [i].CheckActive ();
-//				Debug.Log (" check.........brick active..2222**************");
 			}
 		}
 	}
@@ -370,8 +384,8 @@ public class Block : Object3d , IPoolable
 	public void DeleteAllBrick ()
 	{
 		for (int i=0; i<m_Bricks.Count; i++) {
-			if(m_Bricks [i]!=null)
-			GameObject.DestroyImmediate (m_Bricks [i].gameObject);
+			if (m_Bricks [i] != null)
+				GameObject.DestroyImmediate (m_Bricks [i].gameObject);
 		}
 		m_Bricks.Clear ();
 	}
@@ -379,8 +393,8 @@ public class Block : Object3d , IPoolable
 	public void DeleteAllBlock ()
 	{
 		for (int i=0; i<m_Blocks.Count; i++) {
-			if(m_Blocks [i]!=null)
-			GameObject.DestroyImmediate (m_Blocks [i].gameObject);
+			if (m_Blocks [i] != null)
+				GameObject.DestroyImmediate (m_Blocks [i].gameObject);
 		}
 		m_Blocks.Clear ();
 	}
@@ -459,6 +473,7 @@ public class Block : Object3d , IPoolable
 	{
 
 		if (m_Bricks.Count > 0 && HasMoveInCondition ()) {
+			m_Bricks.Sort (SortByLeft);
 			float t = Get_MoveIn_Duration () / m_Bricks.Count;
 			for (int i=0; i<m_Bricks.Count; i++) {
 				m_Bricks [i].M_Loc_CurPot = M_Loc_StartPot + M_MoveIn_Span;
@@ -468,50 +483,46 @@ public class Block : Object3d , IPoolable
 		}
 
 		for (int i=0; i<m_Blocks.Count; i++) {
-			m_Blocks [i].SetBrickMoveInParam (); Debug.Log(" move in ="+m_Blocks[i].name);
+			m_Blocks [i].SetBrickMoveInParam (); 
 		}
 
+	}
+
+	public override void StartMoveOut ()
+	{
+		m_MoveOut = true;
+		for (int i=0; i<m_Bricks.Count; i++) {
+			m_Bricks [i].StartMoveOut ();
+		}
+	}
+
+	void SetBrickMoveOutParam ()
+	{
+		if (m_Bricks.Count > 0 && HasMoveOutCondition ()) {
+			m_Bricks.Sort (SortByLeft);
+			float t = Get_MoveOut_Duration () / m_Bricks.Count;
+			for (int i=0; i<m_Bricks.Count; i++) {
+				m_Bricks [i].M_MoveOut_Loc_EndPot = m_Bricks [i].M_Loc_EndPot + M_MoveOut_Span;
+				m_Bricks [i].M_MoveOut_Duration_Time = t;
+				m_Bricks [i].M_MoveOut_DelayTime = i * t;
+			}
+		}
+		
+		for (int i=0; i<m_Blocks.Count; i++) {
+			m_Blocks [i].SetBrickMoveOutParam (); 
+		}
 	}
 
 	public void InitParam ()
 	{
 		SetBrickMoveInParam ();
+		SetBrickMoveOutParam ();
 	}
 
 
 	#endregion
 
-	float m_Min_StartX = Mathf.Infinity;
 
-	public float M_Min_StartX {
-		get {
-			return m_Min_StartX;
-		}
-	}
-
-	float m_Max_StartX = Mathf.NegativeInfinity;
-
-	public float M_Max_StartX {
-		get {
-			return m_Max_StartX;
-		}
-	}
-
-	float m_Min_EndX = Mathf.Infinity;
-
-	public float M_Min_EndX {
-		get {
-			return m_Min_EndX;
-		}
-	}
-
-	float m_Max_EndX = Mathf.NegativeInfinity;
-
-	public float M_Max_EndX {
-		get {
-			return m_Max_EndX;
-		}
-	}
 
 	public void ComputeMinBoundsX ()
 	{
@@ -551,6 +562,10 @@ public class Block : Object3d , IPoolable
 		}
 	}
 
+	public override void _ChangeFunction ()
+	{
+
+	}
 
 }
 

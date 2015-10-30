@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Brick :  Object3d, IPoolable
 {
@@ -55,7 +56,7 @@ public class Brick :  Object3d, IPoolable
 //		M_Parent = null;
 //		m_GO.SetActive (false);
 
-		Reset();
+		Reset ();
 
 	}
 
@@ -82,5 +83,34 @@ public class Brick :  Object3d, IPoolable
 			((Block)M_Parent).DeleteBrick (this);
 		}
 	}
-	
+
+//	public static int SortByLeft (Brick b1, Brick b2)
+//	{
+//		if (b1 == null) {
+//			if (b2 == null)
+//				return 0;
+//			return 1;
+//		}
+//		if (b2 == null)
+//			return -1;
+//		int r = b1.M_Loc_CurPot.x .CompareTo (b2.M_Loc_CurPot.x);
+//		return r;
+//
+//	}
+//
+//	public static int SortByBottom (Brick b1, Brick b2)
+//	{
+//		if (b1 == null) {
+//			if (b2 == null)
+//				return 0;
+//			return 1;
+//		}
+//		if (b2 == null)
+//			return -1;
+//		int r = b1.M_Loc_CurPot.y .CompareTo (b2.M_Loc_CurPot.y);
+//		return r;
+//
+//	}
+
+
 }

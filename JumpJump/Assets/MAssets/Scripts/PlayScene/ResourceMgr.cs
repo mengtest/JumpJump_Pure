@@ -19,11 +19,15 @@ public class ResourceMgr
 	}
 
 	public Material[] brickMtls;
-	public static int BRICKMTL_NUM = 3;
+	public static int BRICKMTL_NUM = 7;
 	public static string[] BRICKMTL_NAMES = {
 		"BrickMtl_EMPTY",
 		"BrickMtl_REMOVE",
-		"BrickMtl_JUMP_HEIGHTER"
+		"BrickMtl_JUMP_HEIGHTER",
+		"BrickMtl_JUMP_TWICE",
+		"BrickMtl_SPEED_UP",
+		"BrickMtl_SPEED_DOWN",
+		"BrickMtl_UNBEATABLE"
 	};
 
 	public void LoadBrickMtl ()

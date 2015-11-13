@@ -6,25 +6,30 @@ public class PlayerController : MonoBehaviour
 
 	public Vector3 moveSpeed = new Vector3 (3, 0, 0);
 	Vector3 m_InitMoveSpeed;
-	Rigidbody m_rigidbody;
+	Rigidbody m_Rigidbody;
+	Renderer m_Renderer;
+	Material m_InitMtl;
 	bool m_OnGround = false;
 	SphereCollider m_sphereCollider;
 	Vector3 m_InitPot;
 	Vector3 m_InitRotate;
 	int m_JumpTimes = 0;
 	int m_MaxJumpTimes = 1;
+	Vector3 m_OldVelocity;
 	public Vector3 m_Gravity = new Vector3 (0, -9.8f, 0);
 
 	// Use this for initialization
 	void Start ()
 	{
-		m_rigidbody = GetComponent<Rigidbody> ();
+		m_Rigidbody = GetComponent<Rigidbody> ();
 		m_sphereCollider = GetComponent<SphereCollider> ();
+		m_Renderer = GetComponent<Renderer> ();
+		m_InitMtl = m_Renderer.material;
 
 		m_InitPot = transform.position;
 		m_InitRotate = transform.eulerAngles;
 
-		m_rigidbody.angularVelocity = Vector3.right * 0.1f;
+		m_Rigidbody.angularVelocity = Vector3.right * 0.1f;
 
 		Physics.gravity = m_Gravity;
 		m_InitMoveSpeed = moveSpeed;
@@ -37,15 +42,16 @@ public class PlayerController : MonoBehaviour
 	{
 		CheckGrounded ();
 		CheckFailed ();
+		m_OldVelocity = m_Rigidbody.velocity;
 	}
 
 	void FixedUpdate ()
 	{
 
 
-		Vector3 velocityChange = Vector3.right * GetMoveSpeed () - m_rigidbody.velocity;
+		Vector3 velocityChange = Vector3.right * GetMoveSpeed () - m_Rigidbody.velocity;
 		velocityChange.y = 0;
-		m_rigidbody.AddForce (velocityChange, ForceMode.VelocityChange);
+		m_Rigidbody.AddForce (velocityChange, ForceMode.VelocityChange);
 
 
 		m_OnGround = false;
@@ -58,7 +64,7 @@ public class PlayerController : MonoBehaviour
 
 	void OnCollisionEnter (Collision collsion)
 	{	
-		CheckFaild (collsion);
+		CheckFailed (collsion);
 		m_OnGround = true;
 //		m_JumpTimes = 0;
 		OnFunction (collsion);
@@ -68,7 +74,7 @@ public class PlayerController : MonoBehaviour
 
 	void OnCollisionStay (Collision collsion)
 	{
-		CheckFaild (collsion);
+		CheckFailed (collsion);
 		m_OnGround = true;
 //		m_JumpValidateTime=0;
 	}
@@ -91,9 +97,9 @@ public class PlayerController : MonoBehaviour
 			if (m_JumpTimes == 0 && (m_JumpValidateTime += Time.deltaTime) > 0.03f) {
 				return;
 			}
-			Vector3 v = m_rigidbody.velocity;
+			Vector3 v = m_Rigidbody.velocity;
 			v.y = moveSpeed.y;
-			m_rigidbody.velocity = v;
+			m_Rigidbody.velocity = v;
 			m_JumpTimes++;
 		}
 	}
@@ -105,17 +111,12 @@ public class PlayerController : MonoBehaviour
 		Vector3 origin = m_sphereCollider.bounds.center;
 		ray.origin = origin;
 		ray.direction = Vector3.down;
-		float dst = m_sphereCollider.radius + 0.05f;
-//		if (Physics.Raycast (ray, dst) && m_rigidbody.velocity.y<0 ) {
-//			m_JumpTimes = 0;
-//		} else {
-//		}
+		float dst = m_sphereCollider.radius + 0.1f;
+	
+//		Debug.DrawLine (ray.origin, ray.origin + ray.direction * dst, Color.red);
 
 
-		Debug.DrawLine (ray.origin, ray.origin + ray.direction * dst, Color.red);
-
-
-		if (m_rigidbody.velocity.y > 0)
+		if (m_Rigidbody.velocity.y > 0)
 			return;
 
 		int lay = 1 << LayerMask.NameToLayer ("Player");
@@ -125,51 +126,56 @@ public class PlayerController : MonoBehaviour
 //		if (check1) {
 //			m_JumpTimes = 0;
 //			m_JumpValidateTime = 0;
-//			Debug.Log (" hit pot=" + hit.point + " hit name=" + hit.collider.name + " m_rigidbody.velocity.y=" + m_rigidbody.velocity.y);
+//			Debug.Log (" hit pot=" + hit.point + " hit name=" + hit.collider.name + " m_Rigidbody.velocity.y=" + m_Rigidbody.velocity.y);
 //		}
 
-		origin.x=m_sphereCollider.bounds.center.x+m_sphereCollider.radius;
-		ray.origin=origin;
+		origin.x = m_sphereCollider.bounds.center.x + m_sphereCollider.radius;
+		ray.origin = origin;
 		bool check2 = Physics.Raycast (ray, out hit, dst, ~lay);
 //		if (check2) {
 //			m_JumpTimes = 0;
 //			m_JumpValidateTime = 0;
-//			Debug.Log (" hit pot=" + hit.point + " hit name=" + hit.collider.name + " m_rigidbody.velocity.y=" + m_rigidbody.velocity.y);
+//			Debug.Log (" hit pot=" + hit.point + " hit name=" + hit.collider.name + " m_Rigidbody.velocity.y=" + m_Rigidbody.velocity.y);
 //		}
-		origin.x=m_sphereCollider.bounds.center.x+m_sphereCollider.radius;
-				ray.origin=origin;
+		origin.x = m_sphereCollider.bounds.center.x - m_sphereCollider.radius;
+		ray.origin = origin;
 		bool check3 = Physics.Raycast (ray, out hit, dst, ~lay);
 		if (check1 || check2 || check3) {
 			m_JumpTimes = 0;
 			m_JumpValidateTime = 0;
-//			Debug.Log (" hit pot=" + hit.point + " hit name=" + hit.collider.name + " m_rigidbody.velocity.y=" + m_rigidbody.velocity.y);
+//			Debug.Log (" hit pot=" + hit.point + " hit name=" + hit.collider.name + " m_Rigidbody.velocity.y=" + m_Rigidbody.velocity.y);
 		}
 
 
-
-
-//		bool check1=Physics.Raycast(ray,dst,~lay);
-//		origin.x=m_sphereCollider.bounds.center.x-m_sphereCollider.radius;
-//		ray.origin=origin;
-//		bool check2=Physics.Raycast(ray,dst,~lay);
-//		origin.x=m_sphereCollider.bounds.center.x+m_sphereCollider.radius;
-//		ray.origin=origin;
-//		bool check3=Physics.Raycast(ray,dst,~lay);
-//
-//		if(check1 || check2 || check3){
-//			m_JumpTimes=0;
-//			m_JumpValidateTime=0; Debug.Log(" ******** dst="+dst+" ray.origion"+ray.origin);
-//		}
-
 	}
 
-	void CheckFaild (Collision collision)
+	void CheckFailed (Collision collision)
 	{
+
+
 		float threasholdHeight = m_sphereCollider.bounds.center.y - m_sphereCollider.radius * 0.4f;
+		float threasholdHeight2 = m_sphereCollider.bounds.center.y + m_sphereCollider.radius * 0.4f;
 		
 		for (int i=0; i<collision.contacts.Length; i++) {
 			ContactPoint cp = collision.contacts [i]; 
-			if (cp.point.y > threasholdHeight && cp.point.x > m_sphereCollider.bounds.center.x) { 
+			if ((cp.point.y > threasholdHeight && cp.point.x > m_sphereCollider.bounds.center.x) || 
+			    (m_IsUnbeatable && cp.point.y > threasholdHeight2)) {
+				if (m_IsUnbeatable) {
+					Brick brick = collision.gameObject.GetComponent<Brick> ();
+					if (brick != null) {
+						Rigidbody rg = brick.GetComponent<Rigidbody> ();
+						if (rg == null) {
+							rg = brick.gameObject.AddComponent<Rigidbody> ();
+						}
+//						rg.AddExplosionForce (50, brick.transform.position, 1f);
+						Vector3 dir = brick.transform.position - this.transform.position;
+						rg.AddForce (dir * 5, ForceMode.VelocityChange);
+						this.m_Rigidbody.velocity = m_OldVelocity;
+						m_JumpTimes = 0;
+						m_JumpValidateTime = 0;
+						return;
+					}
+				}
 				OnFaild ();
 				break;
 			}
@@ -183,7 +189,8 @@ public class PlayerController : MonoBehaviour
 	
 	void CheckFailed ()
 	{
-		if (transform.position.y < -0.1f) {
+		float minY = m_IsUnbeatable ? -1f : - 0.5f;
+		if (transform.position.y < minY) {
 			OnFaild ();
 		}
 	}
@@ -196,7 +203,8 @@ public class PlayerController : MonoBehaviour
 		SetEmptyFunction ();
 		m_JumpTimes = 0;
 		m_JumpValidateTime = 0;
-		m_rigidbody.velocity = Vector3.zero;
+		m_Rigidbody.velocity = Vector3.zero;
+		m_Renderer.material = m_InitMtl;
 
 
 	}
@@ -220,22 +228,45 @@ public class PlayerController : MonoBehaviour
 	{
 		Brick brick = collsion.gameObject.GetComponent<Brick> ();
 		if (brick != null) {
+//			Debug.Log (" type=" + brick.M_FunctionType);
 			switch (brick.M_FunctionType) {
 			case FunctionType.EMPTY:
-				break;
+				return;
 			case FunctionType.REMOVE:
 				SetEmptyFunction ();
 				break;
 			case FunctionType.JUMP_HEIGHTER:
+				SetEmptyFunction();
 				moveSpeed.y = m_InitMoveSpeed.y * 1.2f;
 				break;
+			case FunctionType.JUMP_TWICE:
+				SetEmptyFunction();
+				m_MaxJumpTimes = 2;
+				break;
+			case FunctionType.SPEED_UP:
+				SetEmptyFunction();
+				moveSpeed.x = m_InitMoveSpeed.x * 1.2f;
+				break;
+			case FunctionType.SPEED_DOWN:
+				SetEmptyFunction();
+				moveSpeed.x = m_InitMoveSpeed.x * 0.8f;
+				break;
+			case FunctionType.UNBEATABLE:
+				SetEmptyFunction();
+				m_IsUnbeatable = true;
+				break;
 			}
+			m_Renderer.material = brick.GetComponent<Renderer> ().material;
 		}
 	}
+
+	bool m_IsUnbeatable = false;
 
 	void SetEmptyFunction ()
 	{
 		moveSpeed = m_InitMoveSpeed;
+		m_IsUnbeatable = false;
+		m_MaxJumpTimes = 1;
 	}
 	
 }

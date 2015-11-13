@@ -564,7 +564,11 @@ public class Block : Object3d , IPoolable
 
 	public override void _ChangeFunction ()
 	{
-
+		if (M_FunctionType == FunctionType.NONE)
+			return;
+		for (int i=0; i<m_Bricks.Count; i++) {
+			m_Bricks [i].M_FunctionType = M_FunctionType;
+		}
 	}
 
 }

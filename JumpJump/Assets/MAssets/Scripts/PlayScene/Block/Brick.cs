@@ -57,7 +57,9 @@ public class Brick :  Object3d, IPoolable
 //		m_GO.SetActive (false);
 
 		Reset ();
-
+		Rigidbody rg = GetComponent<Rigidbody> ();
+		if(rg!=null) GameObject.Destroy(rg);
+		transform.localRotation=Quaternion.identity;
 	}
 
 	public void IDestory ()

@@ -63,6 +63,12 @@ public class Object3dEditor : Editor
 		
 			if (oldType != object3d.M_FunctionType) {
 				object3d._ChangeFunction ();
+				if (object3d as Block) {
+					Block block = (Block)object3d;
+					for(int i=0;i<block.M_Bricks.Count;i++){
+						EditorUtility.SetDirty (block.M_Bricks[i]);
+					}
+				}
 				Debug.Log ("ddf");
 			}
 			object3d.M_Old_FunctionType = object3d.M_FunctionType;

@@ -18,36 +18,57 @@ public class PlayerController : MonoBehaviour
 	Vector3 m_OldVelocity;
 	public Vector3 m_Gravity = new Vector3 (0, -9.8f, 0);
 
-	// Use this for initialization
-	void Start ()
+	void Init ()
 	{
 		m_Rigidbody = GetComponent<Rigidbody> ();
 		m_sphereCollider = GetComponent<SphereCollider> ();
 		m_Renderer = GetComponent<Renderer> ();
 		m_InitMtl = m_Renderer.material;
-
+		
 		m_InitPot = transform.position;
 		m_InitRotate = transform.eulerAngles;
-
+		
 		m_Rigidbody.angularVelocity = Vector3.right * 0.1f;
-
+		
 		Physics.gravity = m_Gravity;
 		m_InitMoveSpeed = moveSpeed;
-
+		
 		m_sphereCollider.material = Resources.Load ("PhysicMaterial/Ice") as PhysicMaterial;
+
+		m_Unbeatable_Timer = new MTimer (1f);
+		m_Unbeatable_Timer.OnTime += OnUnbeatable_Over;
+	}
+
+	// Use this for initialization
+	void Start ()
+	{
+		Init ();
 	}
 	
 	// Update is called once per frame
 	void Update ()
 	{
+
 		CheckGrounded ();
 		CheckFailed ();
 		m_OldVelocity = m_Rigidbody.velocity;
+		m_Unbeatable_Timer.Update ();
+
+		tmp=transform.position;
+		tmp.z=0;
+		transform.position=tmp;
+
 	}
+
+	Vector3 tmp;
 
 	void FixedUpdate ()
 	{
 
+		if (m_IsUnbeatable) {
+			FixUpdate_Unbeatable ();
+			return;
+		}
 
 		Vector3 velocityChange = Vector3.right * GetMoveSpeed () - m_Rigidbody.velocity;
 		velocityChange.y = 0;
@@ -123,20 +144,12 @@ public class PlayerController : MonoBehaviour
 
 		RaycastHit hit;
 		bool check1 = Physics.Raycast (ray, out hit, dst, ~lay);
-//		if (check1) {
-//			m_JumpTimes = 0;
-//			m_JumpValidateTime = 0;
-//			Debug.Log (" hit pot=" + hit.point + " hit name=" + hit.collider.name + " m_Rigidbody.velocity.y=" + m_Rigidbody.velocity.y);
-//		}
+
 
 		origin.x = m_sphereCollider.bounds.center.x + m_sphereCollider.radius;
 		ray.origin = origin;
 		bool check2 = Physics.Raycast (ray, out hit, dst, ~lay);
-//		if (check2) {
-//			m_JumpTimes = 0;
-//			m_JumpValidateTime = 0;
-//			Debug.Log (" hit pot=" + hit.point + " hit name=" + hit.collider.name + " m_Rigidbody.velocity.y=" + m_Rigidbody.velocity.y);
-//		}
+
 		origin.x = m_sphereCollider.bounds.center.x - m_sphereCollider.radius;
 		ray.origin = origin;
 		bool check3 = Physics.Raycast (ray, out hit, dst, ~lay);
@@ -159,22 +172,11 @@ public class PlayerController : MonoBehaviour
 		for (int i=0; i<collision.contacts.Length; i++) {
 			ContactPoint cp = collision.contacts [i]; 
 			if ((cp.point.y > threasholdHeight && cp.point.x > m_sphereCollider.bounds.center.x) || 
-			    (m_IsUnbeatable && cp.point.y > threasholdHeight2)) {
+				(m_IsUnbeatable && cp.point.y > threasholdHeight2)) {
 				if (m_IsUnbeatable) {
 					Brick brick = collision.gameObject.GetComponent<Brick> ();
-					if (brick != null) {
-						Rigidbody rg = brick.GetComponent<Rigidbody> ();
-						if (rg == null) {
-							rg = brick.gameObject.AddComponent<Rigidbody> ();
-						}
-//						rg.AddExplosionForce (50, brick.transform.position, 1f);
-						Vector3 dir = brick.transform.position - this.transform.position;
-						rg.AddForce (dir * 5, ForceMode.VelocityChange);
-						this.m_Rigidbody.velocity = m_OldVelocity;
-						m_JumpTimes = 0;
-						m_JumpValidateTime = 0;
-						return;
-					}
+					UnbeatableOnBrick (brick);
+					return;
 				}
 				OnFaild ();
 				break;
@@ -236,37 +238,131 @@ public class PlayerController : MonoBehaviour
 				SetEmptyFunction ();
 				break;
 			case FunctionType.JUMP_HEIGHTER:
-				SetEmptyFunction();
+				SetEmptyFunction ();
 				moveSpeed.y = m_InitMoveSpeed.y * 1.2f;
 				break;
 			case FunctionType.JUMP_TWICE:
-				SetEmptyFunction();
+				SetEmptyFunction ();
 				m_MaxJumpTimes = 2;
 				break;
 			case FunctionType.SPEED_UP:
-				SetEmptyFunction();
+				SetEmptyFunction ();
 				moveSpeed.x = m_InitMoveSpeed.x * 1.2f;
 				break;
 			case FunctionType.SPEED_DOWN:
-				SetEmptyFunction();
+				SetEmptyFunction ();
 				moveSpeed.x = m_InitMoveSpeed.x * 0.8f;
 				break;
 			case FunctionType.UNBEATABLE:
-				SetEmptyFunction();
-				m_IsUnbeatable = true;
+				SetEmptyFunction ();
+//				m_IsUnbeatable = true;
+				OnUnbeatable ();
 				break;
 			}
 			m_Renderer.material = brick.GetComponent<Renderer> ().material;
+
+			CheckOnCoinBrick (brick);
 		}
 	}
-
-	bool m_IsUnbeatable = false;
 
 	void SetEmptyFunction ()
 	{
 		moveSpeed = m_InitMoveSpeed;
-		m_IsUnbeatable = false;
+//		m_IsUnbeatable = false;
 		m_MaxJumpTimes = 1;
 	}
+
+
+
+	#region unbeatable & skill
+
+	bool m_IsUnbeatable = false;
+	float m_Unbeatable_Duration = 2f;
+	MTimer m_Unbeatable_Timer;
+
+	void OnUnbeatable ()
+	{
+		m_Unbeatable_Timer.Restart (false, m_Unbeatable_Duration);
+		m_IsUnbeatable = true;
+		m_Rigidbody.useGravity = false;
+//		m_Rigidbody.isKinematic = true;
+	
+	}
+
+	void OnUnbeatable_Over ()
+	{
+		m_Unbeatable_Timer.Pause ();
+		m_IsUnbeatable = false;
+		m_Rigidbody.useGravity = true;
+//		m_Rigidbody.isKinematic = false;
+		m_Rigidbody.velocity = Vector3.up * m_InitMoveSpeed.y;
+	}
+
+	Vector3 m_Unbeatable_Vec = Vector3.zero;
+
+	void FixUpdate_Unbeatable ()
+	{
+		m_Unbeatable_Vec.x = m_InitMoveSpeed.x * 2f;
+//		this.transform.localPosition += m_Unbeatable_Vec * Time.deltaTime;
+
+		Vector3 velocityChange = m_Unbeatable_Vec - m_Rigidbody.velocity;
+		m_Rigidbody.AddForce (velocityChange, ForceMode.VelocityChange);
+	}
+
+	void UnbeatableOnBrick (Brick brick)
+	{
+		if (brick != null) {
+
+			Block parent = (Block)brick.M_Parent;
+			Brick b;
+			Rigidbody rg;
+			for (int i=0; i<parent.M_Bricks.Count; i++) {
+				b = parent.M_Bricks [i];
+				rg = b.GetComponent<Rigidbody> ();
+				if (rg == null) {
+					rg = b.gameObject.AddComponent<Rigidbody> ();
+				}
+			}
+
+			rg = brick.GetComponent<Rigidbody> ();
+			if (rg == null) {
+				rg = brick.gameObject.AddComponent<Rigidbody> ();
+			}
+			//						rg.AddExplosionForce (50, brick.transform.position, 1f);
+			Vector3 dir = brick.transform.position - this.transform.position;
+			rg.AddForce (dir * 10, ForceMode.VelocityChange);
+			this.m_Rigidbody.velocity = m_OldVelocity;
+			m_JumpTimes = 0;
+			m_JumpValidateTime = 0;
+		}
+	}
+	
+
+	// only in air is validate
+//	bool m_SpeedUp = false;
+//	bool m_SlownDown = false;
+
+	public void OnSkill_SpeedUp ()
+	{
+		moveSpeed.x = m_InitMoveSpeed.x * 1.5f;
+	}
+
+	public void OnSkill_SlownDown ()
+	{
+		moveSpeed.x = m_InitMoveSpeed.x * 0.5f;
+	}
+
+	#endregion
+
+
+	void CheckOnCoinBrick (Brick brick)
+	{
+		if (brick.M_IsCoin) {
+			// get coin
+			brick.M_IsCoin = false;
+		}
+
+	}
+
 	
 }

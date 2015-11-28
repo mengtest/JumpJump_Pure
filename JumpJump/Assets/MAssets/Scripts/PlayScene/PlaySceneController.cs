@@ -230,6 +230,7 @@ public class PlaySceneController : MonoBehaviour
 		PauseGame ();
 
 		GameState.Instance ().M_PlayState = PlayState.PAUSE;
+
 	}
 	
 	public void OnResume ()

@@ -869,26 +869,27 @@ public class Object3d :MonoBehaviour
 	{
 		switch (m_FunctionType) {
 		case FunctionType.EMPTY:
-			GetComponent<Renderer> ().material = ResourceMgr.Instance ().brickMtls [0];
+			GetComponent<Renderer> ().material = ResourceMgr.Instance ().m_BrickMtls [0];
 			break;
 		case FunctionType.REMOVE:
-			GetComponent<Renderer> ().material = ResourceMgr.Instance ().brickMtls [1];
+			GetComponent<Renderer> ().material = ResourceMgr.Instance ().m_BrickMtls [1];
 			break;
 		case FunctionType.JUMP_HEIGHTER:
-			GetComponent<Renderer> ().material = ResourceMgr.Instance ().brickMtls [2];
+			GetComponent<Renderer> ().material = ResourceMgr.Instance ().m_BrickMtls [2];
 			break;
 		case FunctionType.JUMP_TWICE:
-			GetComponent<Renderer> ().material = ResourceMgr.Instance ().brickMtls [3];
+			GetComponent<Renderer> ().material = ResourceMgr.Instance ().m_BrickMtls [3];
 			break;
 		case FunctionType.SPEED_UP:
-			GetComponent<Renderer> ().material = ResourceMgr.Instance ().brickMtls [4];
+			GetComponent<Renderer> ().material = ResourceMgr.Instance ().m_BrickMtls [4];
 			break;
 		case FunctionType.SPEED_DOWN:
-			GetComponent<Renderer> ().material = ResourceMgr.Instance ().brickMtls [5];
+			GetComponent<Renderer> ().material = ResourceMgr.Instance ().m_BrickMtls [5];
 			break;
 		case FunctionType.UNBEATABLE:
-			GetComponent<Renderer> ().material = ResourceMgr.Instance ().brickMtls [6];
+			GetComponent<Renderer> ().material = ResourceMgr.Instance ().m_BrickMtls [6];
 			break;
+	
 			
 		}
 	}
@@ -964,7 +965,7 @@ public enum FunctionType
 	JUMP_TWICE=3,
 	SPEED_UP=4,
 	SPEED_DOWN=5,
-	UNBEATABLE=6
+	UNBEATABLE=6,
 }
 
 

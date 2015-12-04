@@ -3,6 +3,11 @@ using System.Collections;
 
 public interface SkyAction
 {
+	bool IsPlaying {
+		get;
+		set;
+	}
+
 	bool Loop {
 		get;
 		set;

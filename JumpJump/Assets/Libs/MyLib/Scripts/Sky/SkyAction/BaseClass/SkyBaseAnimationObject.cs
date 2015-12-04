@@ -3,6 +3,10 @@ using System.Collections;
 
 public class SkyBaseAnimationObject : MonoBehaviour,SkyAction
 {
+	public bool IsPlaying {
+		get;
+		set;
+	}
 
 	public bool Loop {
 		get{ return _loop;}
@@ -75,6 +79,7 @@ public class SkyBaseAnimationObject : MonoBehaviour,SkyAction
 
 	void Start ()
 	{
+
 		Init ();
 		if (AutoRun) {
 			StartCoroutine (delayTimeAction (AutoStartDelayTime, PlayLoop));
@@ -83,6 +88,7 @@ public class SkyBaseAnimationObject : MonoBehaviour,SkyAction
 
 	public virtual  void Init ()
 	{
+		IsPlaying = false;
 		ParentAction = null;
 		DelayCallBack = new SkyAniCallBack ();
 		DelayCallBack.SetCompleteMethod (() => {
@@ -95,6 +101,8 @@ public class SkyBaseAnimationObject : MonoBehaviour,SkyAction
 			PlayNext ();
 			if (Loop)
 				Delay ();
+			else
+				IsPlaying = false;
 		});
 	}
 	
@@ -107,6 +115,7 @@ public class SkyBaseAnimationObject : MonoBehaviour,SkyAction
 
 	public void Play ()
 	{
+		IsPlaying = true;
 		if (DelayTime > 0) {
 			Delay ();
 		} else {

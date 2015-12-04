@@ -4,6 +4,10 @@ using DG.Tweening;
 
 public class SkyBaseAnimationNormal : SkyAction
 {
+	public bool IsPlaying {
+		get;
+		set;
+	}
 
 	public bool Loop {
 		get;
@@ -52,6 +56,7 @@ public class SkyBaseAnimationNormal : SkyAction
 
 	public virtual  void Init ()
 	{
+		IsPlaying = false;
 		PositionSkyAniDuration = SkyAniDuration.Linear;
 		ParentAction = null;
 		DelayCallBack = new SkyAniCallBack ();
@@ -65,6 +70,8 @@ public class SkyBaseAnimationNormal : SkyAction
 			PlayNext ();
 			if (Loop)
 				Delay ();
+			else
+				IsPlaying = false;
 		});
 	}
 	
@@ -77,6 +84,7 @@ public class SkyBaseAnimationNormal : SkyAction
 	
 	public void Play ()
 	{
+		IsPlaying = true;
 		if (DelayTime > 0) {
 			Delay ();
 		} else {
@@ -117,8 +125,11 @@ public class SkyBaseAnimationNormal : SkyAction
 		this.time = 0;
 		return DOTween.To (() => this.time, delegate (float x) {
 			this.time = x;
-		}, endValue, Duration).SetTarget (this);
+		}, endValue, Duration).SetTarget (this).SetEase(Ease.Linear);
 	}
 
+	public float GetLeftTime(){
+		return PlayTime - time;
+	}
 
 }

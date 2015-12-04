@@ -8,6 +8,13 @@ public class SkyDelayAnimation : SkyBaseAnimationNormal {
 		this.Init ();
 	}
 
+	public SkyDelayAnimation(float delayTime,System.Action startAction,System.Action callback){
+		this.Init ();
+		this.PlayTime = delayTime;
+		this.PlayCallBack.AddCompleteMethod (callback);
+		this.PlayCallBack.AddStartMethod (startAction);
+	}
+
 	public override void PlayLoop ()
 	{
 		base.PlayLoop ();

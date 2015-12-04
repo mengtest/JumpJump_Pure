@@ -6,6 +6,7 @@ public class MainPanel : UIWindow {
 		GameController.GetInstance ().GetPlayGameInstance().OnStart ();
 		GameController.GetInstance ().GetMainPanel().ShowOut ();
 		GameController.GetInstance ().GetPlayPanel().ShowIn ();
+		GameController.GetInstance ().GetPlayPanel ().Start ();
 	}
 
 }

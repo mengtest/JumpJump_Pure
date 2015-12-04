@@ -19,5 +19,6 @@ public class GameOverPanel : UIWindow {
 		GameController.GetInstance ().GetGameOverPanel().ShowOut ();
 		GameController.GetInstance ().GetPlayGameInstance().OnResume ();
 		GameController.GetInstance ().GetPlayGameInstance().OnReStart ();
+		GameController.GetInstance ().GetPlayPanel ().Start ();
 	}
 }

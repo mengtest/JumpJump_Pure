@@ -55,6 +55,7 @@ public class GameController : MonoBehaviour {
 	}
 	
 	private void OnGameOver(){
+		playPanel.Pause ();
 		gameOverPanel.ShowIn ();
 		gameOverPanel.SetFinalScoreText (GameData.Instance().M_RunningData.M_Score + "");
 	}

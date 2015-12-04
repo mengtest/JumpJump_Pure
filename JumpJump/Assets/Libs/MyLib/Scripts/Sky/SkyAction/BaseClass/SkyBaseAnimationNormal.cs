@@ -112,10 +112,11 @@ public class SkyBaseAnimationNormal : SkyAction
 	}
 
 	private float time;
+	private Tweener tw;
 
 	public void DelayTimeAction (float delayTime, SkyAniCallBack skyAnicallBack)
 	{
-		Tweener tw = null;
+		tw = null;
 		tw = runDelayTime (delayTime, delayTime);
 		tw.OnComplete (skyAnicallBack.OnCompleteMethod);
 	}
@@ -130,6 +131,23 @@ public class SkyBaseAnimationNormal : SkyAction
 
 	public float GetLeftTime(){
 		return PlayTime - time;
+	}
+
+	public virtual void Stop(){
+		if(tw!=null){
+			tw.Complete ();
+		}
+	}
+
+	public virtual void Pause(){
+		if(tw!=null){
+			tw.Pause ();
+		}
+	}
+	public virtual void Resume(){
+		if(tw!=null){
+			tw.Play();
+		}
 	}
 
 }

@@ -5,6 +5,7 @@ public class PausePanel : UIWindow {
 	public void OnPlay(){
 		GameController.GetInstance ().GetPausePanel().ShowOut ();
 		GameController.GetInstance ().GetPlayGameInstance().OnResume ();
+		GameController.GetInstance ().GetPlayPanel ().Resume ();
 	}
 	
 	public void ToMenuScreen(){
@@ -17,6 +18,7 @@ public class PausePanel : UIWindow {
 		GameController.GetInstance ().GetPausePanel().ShowOut ();
 		GameController.GetInstance ().GetPlayGameInstance().OnResume ();
 		GameController.GetInstance ().GetPlayGameInstance().OnReStart ();
+		GameController.GetInstance ().GetPlayPanel ().Start ();
 	}
 
 }

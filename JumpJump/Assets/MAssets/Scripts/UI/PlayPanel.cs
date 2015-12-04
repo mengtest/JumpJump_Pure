@@ -27,6 +27,7 @@ public class PlayPanel : UIWindow {
 	public void OnPause(){
 		GameController.GetInstance ().GetPausePanel().ShowIn ();
 		GameController.GetInstance ().GetPlayGameInstance().OnPause ();
+		Pause ();
 	}
 
 	public void OnTouchDown(){
@@ -61,6 +62,18 @@ public class PlayPanel : UIWindow {
 
 	public void FastAction(){
 		count.Play ();
+	}
+
+	public void Start(){
+		count.Stop ();
+	}
+
+	public void Pause(){
+		count.Pause ();
+	}
+
+	public void Resume(){
+		count.Resume ();
 	}
 
 }

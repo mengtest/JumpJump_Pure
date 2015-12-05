@@ -19,11 +19,10 @@ public class GameController : MonoBehaviour {
 	}
 
 	void Init(){
-
-		mainPanel = transform.GetComponentInChildren<MainPanel> ();
-		playPanel = transform.GetComponentInChildren<PlayPanel> ();
-		pausePanel = transform.GetComponentInChildren<PausePanel> ();
-		gameOverPanel = transform.GetComponentInChildren<GameOverPanel> ();
+		mainPanel =  GameObjectTools.GetComponentInChildren <MainPanel> (gameObject);
+		playPanel = GameObjectTools.GetComponentInChildren<PlayPanel> (gameObject);
+		pausePanel = GameObjectTools.GetComponentInChildren<PausePanel> (gameObject);
+		gameOverPanel = GameObjectTools.GetComponentInChildren<GameOverPanel> (gameObject);
 
 		mainPanel.gameObject.SetActive (true);
 		playPanel.gameObject.SetActive (false);

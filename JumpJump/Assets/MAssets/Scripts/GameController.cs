@@ -10,12 +10,14 @@ public class GameController : MonoBehaviour {
 	private PlayPanel playPanel;
 	private PausePanel pausePanel;
 	private GameOverPanel gameOverPanel;
-
+	public int targetFrameRate = 60;
 	void Awake ()
 	{
 		instance = this;
 		Init ();
 		DebuggerUtil.DEBUG_LEVEL = DebuggerUtil.DebugLevel.ALL;
+		DebuggerUtil.Log (" targetFrameRate : " + Application.targetFrameRate);
+		Application.targetFrameRate = targetFrameRate;
 	}
 
 	void Init(){

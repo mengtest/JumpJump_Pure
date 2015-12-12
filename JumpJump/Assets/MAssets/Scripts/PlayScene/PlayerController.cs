@@ -18,6 +18,12 @@ public class PlayerController : MonoBehaviour
 	Vector3 m_OldVelocity;
 	public Vector3 m_Gravity = new Vector3 (0, -9.8f, 0);
 
+	float GetMoveSpeed ()
+	{
+		return m_OnGround ? moveSpeed.x : moveSpeed.x * 0.9f;
+	}
+	
+	#region init and reset
 	void Init ()
 	{
 		m_Rigidbody = GetComponent<Rigidbody> ();
@@ -39,6 +45,23 @@ public class PlayerController : MonoBehaviour
 		m_Unbeatable_Timer.OnTime += OnUnbeatable_Over;
 	}
 
+	public void Reset ()
+	{
+		transform.position = m_InitPot;
+		transform.rotation = Quaternion.Euler (m_InitRotate);
+		m_OnGround = false;
+		SetEmptyFunction ();
+		m_JumpTimes = 0;
+		m_JumpValidateTime = 0;
+		m_Rigidbody.velocity = Vector3.zero;
+		m_Renderer.material = m_InitMtl;
+		
+		
+	}
+
+	#endregion
+
+	#region base
 	// Use this for initialization
 	void Start ()
 	{
@@ -54,9 +77,9 @@ public class PlayerController : MonoBehaviour
 		m_OldVelocity = m_Rigidbody.velocity;
 		m_Unbeatable_Timer.Update ();
 
-		tmp=transform.position;
-		tmp.z=0;
-		transform.position=tmp;
+		tmp = transform.position;
+		tmp.z = 0;
+		transform.position = tmp;
 
 	}
 
@@ -78,44 +101,60 @@ public class PlayerController : MonoBehaviour
 		m_OnGround = false;
 	}
 
-	float GetMoveSpeed ()
-	{
-		return m_OnGround ? moveSpeed.x : moveSpeed.x * 0.9f;
-	}
-
 	void OnCollisionEnter (Collision collsion)
 	{	
 		CheckFailed (collsion);
 		m_OnGround = true;
-//		m_JumpTimes = 0;
 		OnFunction (collsion);
-//		m_JumpValidateTime=0;
-
 	}
-
+	
 	void OnCollisionStay (Collision collsion)
 	{
 		CheckFailed (collsion);
 		m_OnGround = true;
-//		m_JumpValidateTime=0;
 	}
-
+	
 	void OnCollisionExit (Collision collsion)
 	{
 		Brick brick = collsion.gameObject.GetComponent<Brick> ();
 		if (brick != null) {
 			brick.M_IsPlayerCollideExit = true;
 		}
-//		m_OnGround=false;
 	}
 
-	float m_JumpValidateTime = 0;
-	
-	public void OnTouchDown ()
+	void OnTriggerEnter (Collider other)
+	{
+		if (m_IsUnbeatable) {
+			Brick brick = other.gameObject.GetComponent<Brick> ();
+			UnbeatableOnBrick (brick);
+		}
+	}
+
+	void OnTriggerStay (Collider other)
+	{
+		if (m_IsUnbeatable) {
+			Brick brick = other.gameObject.GetComponent<Brick> ();
+			UnbeatableOnBrick (brick);
+		}
+	}
+
+	void OnTriggerExit (Collider other)
 	{
 
+	}
+	
+	
+	#endregion
+
+	#region event
+	float m_JumpValidateTime = 0;
+	public float m_Max_JumpValidateTime=0.05f;
+	
+	public void OnTouchDownScreen ()
+	{
+		
 		if (m_JumpTimes < m_MaxJumpTimes) { 
-			if (m_JumpTimes == 0 && (m_JumpValidateTime += Time.deltaTime) > 0.03f) {
+			if (m_JumpTimes == 0 && (m_JumpValidateTime += Time.deltaTime) > m_Max_JumpValidateTime) {
 				return;
 			}
 			Vector3 v = m_Rigidbody.velocity;
@@ -125,47 +164,58 @@ public class PlayerController : MonoBehaviour
 		}
 	}
 	
-	Ray ray;
+	public void OnSkill_SpeedUp ()
+	{
+		moveSpeed.x = m_InitMoveSpeed.x * 1.5f;
+		DebuggerUtil.Log (" on skill speed up");
+	}
+	
+	public void OnSkill_SlownDown ()
+	{
+		moveSpeed.x = m_InitMoveSpeed.x * 0.5f;
+		DebuggerUtil.Log (" on skill slown down");
+	}
 
+	#endregion
+
+	#region check
+	Ray ray;
+	
 	void CheckGrounded ()
 	{
 		Vector3 origin = m_sphereCollider.bounds.center;
 		ray.origin = origin;
 		ray.direction = Vector3.down;
 		float dst = m_sphereCollider.radius + 0.1f;
-	
-//		Debug.DrawLine (ray.origin, ray.origin + ray.direction * dst, Color.red);
-
-
+		
 		if (m_Rigidbody.velocity.y > 0)
 			return;
-
+		
 		int lay = 1 << LayerMask.NameToLayer ("Player");
-
+		
 		RaycastHit hit;
 		bool check1 = Physics.Raycast (ray, out hit, dst, ~lay);
-
-
+		
+		
 		origin.x = m_sphereCollider.bounds.center.x + m_sphereCollider.radius;
 		ray.origin = origin;
 		bool check2 = Physics.Raycast (ray, out hit, dst, ~lay);
-
+		
 		origin.x = m_sphereCollider.bounds.center.x - m_sphereCollider.radius;
 		ray.origin = origin;
 		bool check3 = Physics.Raycast (ray, out hit, dst, ~lay);
 		if (check1 || check2 || check3) {
 			m_JumpTimes = 0;
 			m_JumpValidateTime = 0;
-//			Debug.Log (" hit pot=" + hit.point + " hit name=" + hit.collider.name + " m_Rigidbody.velocity.y=" + m_Rigidbody.velocity.y);
+			//			Debug.Log (" hit pot=" + hit.point + " hit name=" + hit.collider.name + " m_Rigidbody.velocity.y=" + m_Rigidbody.velocity.y);
 		}
-
-
+		
 	}
-
+	
 	void CheckFailed (Collision collision)
 	{
-
-
+		
+		
 		float threasholdHeight = m_sphereCollider.bounds.center.y - m_sphereCollider.radius * 0.4f;
 		float threasholdHeight2 = m_sphereCollider.bounds.center.y + m_sphereCollider.radius * 0.4f;
 		
@@ -173,9 +223,14 @@ public class PlayerController : MonoBehaviour
 			ContactPoint cp = collision.contacts [i]; 
 			if ((cp.point.y > threasholdHeight && cp.point.x > m_sphereCollider.bounds.center.x) || 
 				(m_IsUnbeatable && cp.point.y > threasholdHeight2)) {
-				if (m_IsUnbeatable) {
-					Brick brick = collision.gameObject.GetComponent<Brick> ();
-					UnbeatableOnBrick (brick);
+//				if (m_IsUnbeatable) {
+//					Brick brick = collision.gameObject.GetComponent<Brick> ();
+//					UnbeatableOnBrick (brick);
+//					return;
+//				}
+				////// if brick is collided by unbeatable collide, not check 
+				Brick brick = collision.gameObject.GetComponent<Brick> ();
+				if (brick.M_OnUnbeatableCollided) {
 					return;
 				}
 				OnFaild ();
@@ -183,7 +238,7 @@ public class PlayerController : MonoBehaviour
 			}
 		}
 	}
-
+	
 	void OnFaild ()
 	{
 		PlayGameInstance.INSTANCE.OnGameResult ();
@@ -196,21 +251,10 @@ public class PlayerController : MonoBehaviour
 			OnFaild ();
 		}
 	}
-
-	public void Reset ()
-	{
-		transform.position = m_InitPot;
-		transform.rotation = Quaternion.Euler (m_InitRotate);
-		m_OnGround = false;
-		SetEmptyFunction ();
-		m_JumpTimes = 0;
-		m_JumpValidateTime = 0;
-		m_Rigidbody.velocity = Vector3.zero;
-		m_Renderer.material = m_InitMtl;
+	#endregion
 
 
-	}
-
+	#region delegate function
 	public bool TriggerBlockActive_ArriveTime (Object3d o3d)
 	{
 		return moveSpeed.x * o3d.Get_ACT_ArriveTime () >= o3d.transform.position.x - transform.position.x;
@@ -226,6 +270,10 @@ public class PlayerController : MonoBehaviour
 		return moveSpeed.x * o3d.Get_MoveOut_LeaveTime () <= transform.position.x - o3d.M_Max_EndX;
 	}
 
+	#endregion 
+
+
+	#region function
 	void OnFunction (Collision collsion)
 	{
 		Brick brick = collsion.gameObject.GetComponent<Brick> ();
@@ -255,7 +303,6 @@ public class PlayerController : MonoBehaviour
 				break;
 			case FunctionType.UNBEATABLE:
 				SetEmptyFunction ();
-//				m_IsUnbeatable = true;
 				OnUnbeatable ();
 				break;
 			}
@@ -268,16 +315,16 @@ public class PlayerController : MonoBehaviour
 	void SetEmptyFunction ()
 	{
 		moveSpeed = m_InitMoveSpeed;
-//		m_IsUnbeatable = false;
 		m_MaxJumpTimes = 1;
 	}
+	#endregion
 
 
+	#region unbeatable 
 
-	#region unbeatable & skill
-
+	public float m_Unbeatable_SpeedRate = 2f;
 	bool m_IsUnbeatable = false;
-	float m_Unbeatable_Duration = 2f;
+	public float m_Unbeatable_Duration = 2f;
 	MTimer m_Unbeatable_Timer;
 
 	void OnUnbeatable ()
@@ -285,8 +332,7 @@ public class PlayerController : MonoBehaviour
 		m_Unbeatable_Timer.Restart (false, m_Unbeatable_Duration);
 		m_IsUnbeatable = true;
 		m_Rigidbody.useGravity = false;
-//		m_Rigidbody.isKinematic = true;
-	
+		OpenKinematicAndTrigger ();
 	}
 
 	void OnUnbeatable_Over ()
@@ -294,19 +340,19 @@ public class PlayerController : MonoBehaviour
 		m_Unbeatable_Timer.Pause ();
 		m_IsUnbeatable = false;
 		m_Rigidbody.useGravity = true;
-//		m_Rigidbody.isKinematic = false;
 		m_Rigidbody.velocity = Vector3.up * m_InitMoveSpeed.y;
+		CloseKinematicAndTrigger ();
 	}
 
 	Vector3 m_Unbeatable_Vec = Vector3.zero;
 
 	void FixUpdate_Unbeatable ()
 	{
-		m_Unbeatable_Vec.x = m_InitMoveSpeed.x * 2f;
-//		this.transform.localPosition += m_Unbeatable_Vec * Time.deltaTime;
+		m_Unbeatable_Vec.x = m_InitMoveSpeed.x * m_Unbeatable_SpeedRate;
+		this.transform.localPosition += m_Unbeatable_Vec * Time.deltaTime;
 
-		Vector3 velocityChange = m_Unbeatable_Vec - m_Rigidbody.velocity;
-		m_Rigidbody.AddForce (velocityChange, ForceMode.VelocityChange);
+//		Vector3 velocityChange = m_Unbeatable_Vec - m_Rigidbody.velocity;
+//		m_Rigidbody.AddForce (velocityChange, ForceMode.VelocityChange);
 	}
 
 	void UnbeatableOnBrick (Brick brick)
@@ -334,27 +380,26 @@ public class PlayerController : MonoBehaviour
 			this.m_Rigidbody.velocity = m_OldVelocity;
 			m_JumpTimes = 0;
 			m_JumpValidateTime = 0;
+			brick.OnUnbeatableCollided ();
 		}
 	}
-	
 
-	// only in air is validate
-//	bool m_SpeedUp = false;
-//	bool m_SlownDown = false;
-
-	public void OnSkill_SpeedUp ()
+	void OpenKinematicAndTrigger ()
 	{
-		moveSpeed.x = m_InitMoveSpeed.x * 1.5f;
+		m_Rigidbody.isKinematic = true;
+		m_sphereCollider.isTrigger = true;
 	}
 
-	public void OnSkill_SlownDown ()
+	void CloseKinematicAndTrigger ()
 	{
-		moveSpeed.x = m_InitMoveSpeed.x * 0.5f;
+		m_Rigidbody.isKinematic = false;
+		m_sphereCollider.isTrigger = false;
 	}
 
 	#endregion
 
 
+	#region coin
 	void CheckOnCoinBrick (Brick brick)
 	{
 		if (brick.M_IsCoin) {
@@ -364,6 +409,11 @@ public class PlayerController : MonoBehaviour
 
 	}
 
+	public float m_MangnetRange=0.6f;
+	void CheckMagnetRange(){
 
+	}
+
+	#endregion
 	
 }

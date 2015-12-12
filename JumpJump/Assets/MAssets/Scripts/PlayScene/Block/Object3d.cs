@@ -201,7 +201,18 @@ public class Object3d :MonoBehaviour
 	#region tweener
 
 	public const bool USETWEENER = true;
-	Tweener tweener;
+	Tweener m_Tweener;
+
+	public Tweener M_Tweener {
+		get {
+			return m_Tweener;
+		}
+	}
+
+	public void PauseTweener(){
+		m_Tweener.Pause();
+	}
+
 
 	public Tweener DoPosition (Vector3 endValue, float duration, float delay=0)
 	{
@@ -403,8 +414,8 @@ public class Object3d :MonoBehaviour
 	public virtual void ActiveMove ()
 	{
 
-		tweener = DoPosition (M_Loc_EndPot, M_MoveDuration);
-		tweener.Restart ();
+		m_Tweener = DoPosition (M_Loc_EndPot, M_MoveDuration);
+		m_Tweener.Restart ();
 	}
 
 	public bool CheckDelayTime ()
@@ -908,8 +919,10 @@ public class Object3d :MonoBehaviour
 
 	public void Reset ()
 	{
-		if (tweener != null)
-			tweener.Pause ();
+		if (m_Tweener != null){
+			m_Tweener.Pause ();
+			m_Tweener.SetAutoKill();
+		}
 
 		m_Time = 0;
 		m_Active = false;

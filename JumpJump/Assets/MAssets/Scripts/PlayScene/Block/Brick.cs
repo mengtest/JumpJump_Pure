@@ -7,6 +7,7 @@ public class Brick :  Object3d, IPoolable
 	public const float WIDTH = 1f;
 	public const float HEIGHT = 1f;
 	bool m_IsCoin = false;
+	bool m_IsCoinAbsorbed=false;
 
 	public bool M_IsCoin {
 		get {
@@ -14,9 +15,20 @@ public class Brick :  Object3d, IPoolable
 		}
 		set {
 			m_IsCoin = value;
-			if(m_IsCoin){
+			if (m_IsCoin) {
 				GetComponent<Renderer> ().material = ResourceMgr.Instance ().m_BrickMtls [ResourceMgr.MTL_ID_COIN];
 			}
+		}
+	}
+
+	bool m_OnUnbeatableCollided = false;
+
+	public bool M_OnUnbeatableCollided {
+		get {
+			return m_OnUnbeatableCollided;
+		}
+		set {
+			m_OnUnbeatableCollided = value;
 		}
 	}
 
@@ -44,6 +56,18 @@ public class Brick :  Object3d, IPoolable
 
 	void Update ()
 	{
+		CheckInMagnetRange();
+	}
+
+	void CheckInMagnetRange(){
+		if(! m_IsCoin || m_IsCoinAbsorbed) return;
+		PlayerController pc=PlayGameInstance.INSTANCE.PSC.PC;
+		Vector3 dstVec=pc.transform.position-this.transform.position;
+		if(dstVec.sqrMagnitude < pc.m_MangnetRange * pc.m_MangnetRange){
+			m_IsCoinAbsorbed=true;
+			ResourceMgr.Instance().GetCoinController().StartAnimation(this.transform.position);
+			GetComponent<Renderer> ().material = ResourceMgr.Instance ().m_BrickMtls [ResourceMgr.MTL_ID_EMPTY];
+		}
 
 	}
 
@@ -65,9 +89,11 @@ public class Brick :  Object3d, IPoolable
 		transform.localRotation = Quaternion.identity;
 		GetComponent<Collider> ().material = ResourceMgr.Instance ().m_Ice_PMtl;
 		if (m_IsCoin) {
-			GetComponent<Renderer> ().material = ResourceMgr.Instance ().m_BrickMtls [0];
+			GetComponent<Renderer> ().material = ResourceMgr.Instance ().m_BrickMtls [ResourceMgr.MTL_ID_EMPTY];
 		}
 		m_IsCoin = false;
+		m_IsCoinAbsorbed=false;
+		m_OnUnbeatableCollided = false;
 	}
 
 	public void IDestory ()
@@ -93,6 +119,38 @@ public class Brick :  Object3d, IPoolable
 		if (M_Parent != null) {
 			((Block)M_Parent).DeleteBrick (this);
 		}
+	}
+
+	public void OnUnbeatableCollided ()
+	{
+		m_OnUnbeatableCollided = true;
+	}
+
+	public override void ActiveMove ()
+	{
+		if (m_OnUnbeatableCollided) {
+			PauseTweener ();
+			return;
+		}
+		base.ActiveMove ();
+	}
+
+	public override void StartMoveIn ()
+	{
+		if (m_OnUnbeatableCollided) {
+			PauseTweener ();
+			return;
+		}
+		base.StartMoveIn ();
+	}
+
+	public override void StartMoveOut ()
+	{
+		if (m_OnUnbeatableCollided) {
+			PauseTweener ();
+			return;
+		}
+		base.StartMoveOut ();
 	}
 	
 }

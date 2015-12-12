@@ -60,7 +60,7 @@ public class PlayGameInstance :IPlayGame {
 	}
 	
 	public void OnTouchDown(){
-		pSC.PC.OnTouchDown();
+		pSC.PC.OnTouchDownScreen();
 	}
 
 	public void OnSkill_SpeedUp ()

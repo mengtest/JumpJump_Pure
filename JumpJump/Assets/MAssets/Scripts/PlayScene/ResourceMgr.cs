@@ -17,12 +17,14 @@ public class ResourceMgr
 	{
 		LoadBrickMtl ();
 		LoadPhysicMtl();
+		LoadCoinResource();
 	}
 
 
 	#region brick Mtls
 	public Material[] m_BrickMtls;
 	public static int BRICKMTL_NUM = 8;
+
 	public static string[] BRICKMTL_NAMES = {
 		"BrickMtl_EMPTY",
 		"BrickMtl_REMOVE",
@@ -34,7 +36,8 @@ public class ResourceMgr
 		"BrickMtl_COIN",
 	};
 
-	public static int MTL_ID_COIN=7;
+	public const int MTL_ID_COIN=7;
+	public const int MTL_ID_EMPTY=0;
 
 	public void LoadBrickMtl ()
 	{
@@ -56,6 +59,41 @@ public class ResourceMgr
 	}
 	#endregion
 	
+	#region  props
+	ObjectPool<CoinController> m_CoinController_Pool;
+	GameObject m_Coin_Prefab;
+	public const int COIN_INIT_NUM=20;
+	public const int COIN_ADD_NUM=5;
+	CoinController NewCoinController ()
+	{
+		GameObject go = GameObject.Instantiate (m_Coin_Prefab) as GameObject;
+		CoinController cC = go.GetComponent<CoinController> ();
+		cC.IReset ();
+		return cC;
+	}
+	
+	public CoinController GetCoinController()
+	{ 
+		return m_CoinController_Pool.Obtain ();
+	}
+	public void FreeCoinController(CoinController cC){
+		m_CoinController_Pool.Free(cC);
+	}
+	
+	void DestoryCoinResource ()
+	{
+		m_CoinController_Pool.DestoryAll ();
+		m_CoinController_Pool = null;
+	}
+	
+	void LoadCoinResource ()
+	{
+		m_Coin_Prefab = Resources.Load ("Props/Coin") as GameObject;
+		m_CoinController_Pool = new ObjectPool<CoinController> (COIN_INIT_NUM, COIN_ADD_NUM);
+		m_CoinController_Pool.NewObject = NewCoinController;
+		m_CoinController_Pool.Init ();
+	}
 
+	#endregion
 
 }

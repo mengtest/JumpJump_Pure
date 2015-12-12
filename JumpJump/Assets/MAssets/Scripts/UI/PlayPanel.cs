@@ -58,10 +58,12 @@ public class PlayPanel : UIWindow {
 
 	public void SlowAction(){
 		count.Play ();
+		GameController.GetInstance ().GetPlayGameInstance ().OnSkill_SlownDown ();
 	}
 
 	public void FastAction(){
 		count.Play ();
+		GameController.GetInstance ().GetPlayGameInstance ().OnSkill_SpeedUp ();
 	}
 
 	public void Start(){

@@ -4,4 +4,9 @@ public class RunningData{
 		get;
 		set;
 	}
+
+	public string M_RoleState {
+		get;
+		set;
+	}
 }

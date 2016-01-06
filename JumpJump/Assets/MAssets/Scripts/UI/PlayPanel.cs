@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class PlayPanel : UIWindow {
   public TextMeshProUGUI scoreText;
+	public TextMeshProUGUI roleStateText;
   
 	public Button slowButton;
 	public Text slowText;
@@ -36,6 +37,7 @@ public class PlayPanel : UIWindow {
 
 	void Update () {
 		SetScore (GameData.Instance().M_RunningData.M_Score + "");
+		roleStateText.text = GameData.Instance ().M_RunningData.M_RoleState; 
 		if (count.IsPlaying) {
 			slowText.text = ((int)count.GetLeftTime() +1 )+"";
 			fastText.text = ((int)count.GetLeftTime() +1 )+"";

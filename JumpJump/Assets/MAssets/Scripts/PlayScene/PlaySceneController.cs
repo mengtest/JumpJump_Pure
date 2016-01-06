@@ -222,6 +222,7 @@ public class PlaySceneController : MonoBehaviour
 		StartGame ();
 
 		GameState.Instance ().M_PlayState = PlayState.PLAY;
+		GameData.Instance ().M_RunningData.M_RoleState = "Normal";
 	}
 	
 	public void OnPause ()
@@ -230,7 +231,7 @@ public class PlaySceneController : MonoBehaviour
 		PauseGame ();
 
 		GameState.Instance ().M_PlayState = PlayState.PAUSE;
-
+		GameData.Instance ().M_RunningData.M_RoleState = "Normal";
 	}
 	
 	public void OnResume ()
@@ -259,7 +260,7 @@ public class PlaySceneController : MonoBehaviour
 		}
 
 		GameState.Instance ().M_PlayState = PlayState.PLAY;
-
+		GameData.Instance ().M_RunningData.M_RoleState = "Normal";
 	}
 	
 	public void OnGameOver ()

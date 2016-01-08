@@ -58,13 +58,18 @@ public class BlockEditor : Object3dEditor
 				EditorUtility.SetDirty (block);
 			}
 
+			if (GUILayout.Button ("Update Brick Resource")) {
+				block.UpdateBrickResource ();
+				EditorUtility.SetDirty (block);
+			}
+
 			GUILayout.Space (10f);
 //			GUILayout.Button ("Add Brick");
 
 
 			GUILayout.Space (10f);
-			if(GUILayout.Button ("DelateAll")){
-				block.DeleteAllChild();
+			if (GUILayout.Button ("DelateAll")) {
+				block.DeleteAllChild ();
 				EditorUtility.SetDirty (block);
 			}
 		}
@@ -90,6 +95,11 @@ public class BlockEditor : Object3dEditor
 		}
 	}
 
+	void UpdateBrickResource ()
+	{
+		Block block = target as Block;
+
+	}
 
 
 }

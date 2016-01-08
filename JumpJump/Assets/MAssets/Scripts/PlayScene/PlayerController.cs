@@ -18,6 +18,7 @@ public class PlayerController : MonoBehaviour
 	Vector3 m_OldVelocity;
 	public Vector3 m_Gravity = new Vector3 (0, -9.8f, 0);
 
+
 	float GetMoveSpeed ()
 	{
 		return m_OnGround ? moveSpeed.x : moveSpeed.x * 0.9f;
@@ -43,6 +44,8 @@ public class PlayerController : MonoBehaviour
 
 		m_Unbeatable_Timer = new MTimer (1f);
 		m_Unbeatable_Timer.OnTime += OnUnbeatable_Over;
+
+
 	}
 
 	public void Reset ()
@@ -284,14 +287,17 @@ public class PlayerController : MonoBehaviour
 				return;
 			case FunctionType.REMOVE:
 				SetEmptyFunction ();
+				GameData.Instance().M_RunningData.M_RoleState="Normal";
 				break;
 			case FunctionType.JUMP_HEIGHTER:
 				SetEmptyFunction ();
 				moveSpeed.y = m_InitMoveSpeed.y * 1.2f;
+				GameData.Instance().M_RunningData.M_RoleState="Higher";
 				break;
 			case FunctionType.JUMP_TWICE:
 				SetEmptyFunction ();
 				m_MaxJumpTimes = 2;
+				GameData.Instance().M_RunningData.M_RoleState="Twice";
 				break;
 			case FunctionType.SPEED_UP:
 				SetEmptyFunction ();
@@ -304,9 +310,11 @@ public class PlayerController : MonoBehaviour
 			case FunctionType.UNBEATABLE:
 				SetEmptyFunction ();
 				OnUnbeatable ();
+				GameData.Instance().M_RunningData.M_RoleState="Unbeatable";
 				break;
 			}
-			m_Renderer.material = brick.GetComponent<Renderer> ().material;
+			m_Renderer.material=brick.GetComponentInChildren<Renderer>().material;
+//			m_Renderer.material = brick.GetComponent<Renderer> ().material;
 
 			CheckOnCoinBrick (brick);
 		}
@@ -342,6 +350,9 @@ public class PlayerController : MonoBehaviour
 		m_Rigidbody.useGravity = true;
 		m_Rigidbody.velocity = Vector3.up * m_InitMoveSpeed.y;
 		CloseKinematicAndTrigger ();
+
+		GameData.Instance().M_RunningData.M_RoleState="Normal";
+		m_Renderer.material = m_InitMtl;
 	}
 
 	Vector3 m_Unbeatable_Vec = Vector3.zero;

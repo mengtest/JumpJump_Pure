@@ -209,10 +209,10 @@ public class Object3d :MonoBehaviour
 		}
 	}
 
-	public void PauseTweener(){
-		m_Tweener.Pause();
+	public void PauseTweener ()
+	{
+		m_Tweener.Pause ();
 	}
-
 
 	public Tweener DoPosition (Vector3 endValue, float duration, float delay=0)
 	{
@@ -878,32 +878,57 @@ public class Object3d :MonoBehaviour
 
 	public virtual void _ChangeFunction ()
 	{
-		switch (m_FunctionType) {
-		case FunctionType.EMPTY:
-			GetComponent<Renderer> ().material = ResourceMgr.Instance ().m_BrickMtls [0];
-			break;
-		case FunctionType.REMOVE:
-			GetComponent<Renderer> ().material = ResourceMgr.Instance ().m_BrickMtls [1];
-			break;
-		case FunctionType.JUMP_HEIGHTER:
-			GetComponent<Renderer> ().material = ResourceMgr.Instance ().m_BrickMtls [2];
-			break;
-		case FunctionType.JUMP_TWICE:
-			GetComponent<Renderer> ().material = ResourceMgr.Instance ().m_BrickMtls [3];
-			break;
-		case FunctionType.SPEED_UP:
-			GetComponent<Renderer> ().material = ResourceMgr.Instance ().m_BrickMtls [4];
-			break;
-		case FunctionType.SPEED_DOWN:
-			GetComponent<Renderer> ().material = ResourceMgr.Instance ().m_BrickMtls [5];
-			break;
-		case FunctionType.UNBEATABLE:
-			GetComponent<Renderer> ().material = ResourceMgr.Instance ().m_BrickMtls [6];
-			break;
-	
-			
+		SetBrickChild();
+	}
+
+	public void SetBrickChild (GameObject newChild)
+	{
+		if (this.transform.childCount != 0) {
+			Transform child = this.transform.GetChild (0);
+			GameObject.DestroyImmediate (child.gameObject);
+			child=null;
+		}
+		if (newChild != null) {
+			newChild.transform.parent = this.transform;
+			M3DUtil.InitLocalTf (newChild.transform);
 		}
 	}
+
+	public void SetBrickChild(){
+		switch (m_FunctionType) {
+		case FunctionType.EMPTY:
+			//			GetComponent<Renderer> ().material = ResourceMgr.Instance ().m_BrickMtls [0];
+			SetBrickChild(ResourceMgr.Instance().CreateBrick_Child(ResourceMgr.TYPE_EMPTY));
+			break;
+		case FunctionType.REMOVE:
+			//			GetComponent<Renderer> ().material = ResourceMgr.Instance ().m_BrickMtls [1];
+			SetBrickChild(ResourceMgr.Instance().CreateBrick_Child(ResourceMgr.TYPE_REMOVE));
+			break;
+		case FunctionType.JUMP_HEIGHTER:
+			//			GetComponent<Renderer> ().material = ResourceMgr.Instance ().m_BrickMtls [2];
+			SetBrickChild(ResourceMgr.Instance().CreateBrick_Child(ResourceMgr.TYPE_HEIGHGER));
+			break;
+		case FunctionType.JUMP_TWICE:
+			//			GetComponent<Renderer> ().material = ResourceMgr.Instance ().m_BrickMtls [3];
+			SetBrickChild(ResourceMgr.Instance().CreateBrick_Child(ResourceMgr.TYPE_TWICE));
+			break;
+		case FunctionType.SPEED_UP:
+			m_FunctionType=FunctionType.EMPTY;
+			//			GetComponent<Renderer> ().material = ResourceMgr.Instance ().m_BrickMtls [4];
+			SetBrickChild(ResourceMgr.Instance().CreateBrick_Child(ResourceMgr.TYPE_EMPTY));
+			break;
+		case FunctionType.SPEED_DOWN:
+			m_FunctionType=FunctionType.EMPTY;
+			//			GetComponent<Renderer> ().material = ResourceMgr.Instance ().m_BrickMtls [5];
+			SetBrickChild(ResourceMgr.Instance().CreateBrick_Child(ResourceMgr.TYPE_EMPTY));
+			break;
+		case FunctionType.UNBEATABLE:
+			//			GetComponent<Renderer> ().material = ResourceMgr.Instance ().m_BrickMtls [6];
+			SetBrickChild(ResourceMgr.Instance().CreateBrick_Child(ResourceMgr.TYPE_UNBEATABLE));
+			break;
+		}
+	}
+
 
 	#endregion
 
@@ -919,9 +944,9 @@ public class Object3d :MonoBehaviour
 
 	public void Reset ()
 	{
-		if (m_Tweener != null){
+		if (m_Tweener != null) {
 			m_Tweener.Pause ();
-			m_Tweener.SetAutoKill();
+			m_Tweener.SetAutoKill ();
 		}
 
 		m_Time = 0;

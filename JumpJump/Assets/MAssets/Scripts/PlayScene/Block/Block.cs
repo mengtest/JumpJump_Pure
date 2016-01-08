@@ -225,14 +225,15 @@ public class Block : Object3d , IPoolable
 
 	#region editor
 
-	public static GameObject cloneBrick;
-
-	public static GameObject GetCloneBrick ()
-	{
-		if (cloneBrick == null) 
-			cloneBrick = Resources.Load ("Brick") as GameObject;
-		return cloneBrick;
-	}
+//	public static GameObject cloneBrick;
+//
+//	public static GameObject GetCloneBrick ()
+//	{
+//		if (cloneBrick == null) 
+//			cloneBrick = Resources.Load ("Brick") as GameObject;
+//		return cloneBrick;
+//	}
+	
 
 	public void AddBlock (BlockType type)
 	{
@@ -407,7 +408,8 @@ public class Block : Object3d , IPoolable
 
 	public void AddBrick (String name, Vector3 loc_StartPot, Vector3 moveSpan, int moveDelay)
 	{
-		GameObject go = GameObject.Instantiate (Block.GetCloneBrick ()) as GameObject;
+//		GameObject go = GameObject.Instantiate (Block.GetCloneBrick ()) as GameObject;
+		GameObject go = ResourceMgr.Instance ().CreateBrick (ResourceMgr.TYPE_EMPTY);
 		go.name = name;
 		go.transform.parent = this.transform;
 	
@@ -517,20 +519,20 @@ public class Block : Object3d , IPoolable
 	{
 		SetBrickMoveInParam ();
 		SetBrickMoveOutParam ();
-		SetRandomCoin();
+		SetRandomCoin ();
 	}
 
 	void SetRandomCoin ()
 	{
 		for (int i=0; i<m_Bricks.Count; i++) {
 
-			if (MathUtil.IndependentProbability (0.5f) && m_Bricks[i].M_FunctionType==FunctionType.EMPTY) {
+			if (MathUtil.IndependentProbability (0.5f) && m_Bricks [i].M_FunctionType == FunctionType.EMPTY) {
 				m_Bricks [i].M_IsCoin = true;
 			}
 		}
 
-		for(int i=0;i<m_Blocks.Count;i++){
-			m_Blocks[i].SetRandomCoin();
+		for (int i=0; i<m_Blocks.Count; i++) {
+			m_Blocks [i].SetRandomCoin ();
 		}
 	}
 
@@ -585,6 +587,33 @@ public class Block : Object3d , IPoolable
 			m_Bricks [i].M_FunctionType = M_FunctionType;
 		}
 	}
+
+	#region update brick resource
+public	void UpdateBrickResource ()
+	{
+		Brick brick;
+		MeshFilter meshFilter;
+		MeshRenderer meshRenderer;
+
+		for (int i=0; i<m_Bricks.Count; i++) {
+			brick = m_Bricks [i];
+			meshFilter = brick.GetComponent<MeshFilter> ();
+			if (meshFilter != null)
+				GameObject.DestroyImmediate (meshFilter);
+			meshRenderer = brick.GetComponent<MeshRenderer> ();
+			if (meshRenderer != null)
+				GameObject.DestroyImmediate (meshRenderer);
+
+//			if (brick.transform.childCount == 0) {
+				brick.SetBrickChild();
+//			}
+		}
+		for (int i=0; i<m_Blocks.Count; i++) {
+			m_Blocks [i].UpdateBrickResource ();
+		}
+	}
+
+	#endregion
 
 }
 

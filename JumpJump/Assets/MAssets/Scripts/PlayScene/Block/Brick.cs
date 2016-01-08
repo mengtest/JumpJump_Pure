@@ -16,7 +16,8 @@ public class Brick :  Object3d, IPoolable
 		set {
 			m_IsCoin = value;
 			if (m_IsCoin) {
-				GetComponent<Renderer> ().material = ResourceMgr.Instance ().m_BrickMtls [ResourceMgr.MTL_ID_COIN];
+//				GetComponent<Renderer> ().material = ResourceMgr.Instance ().m_BrickMtls [ResourceMgr.MTL_ID_COIN];
+				SetBrickChild(ResourceMgr.Instance().CreateBrick_Child(ResourceMgr.TYPE_COIN));
 			}
 		}
 	}
@@ -66,7 +67,11 @@ public class Brick :  Object3d, IPoolable
 		if(dstVec.sqrMagnitude < pc.m_MangnetRange * pc.m_MangnetRange){
 			m_IsCoinAbsorbed=true;
 			ResourceMgr.Instance().GetCoinController().StartAnimation(this.transform.position);
-			GetComponent<Renderer> ().material = ResourceMgr.Instance ().m_BrickMtls [ResourceMgr.MTL_ID_EMPTY];
+			CoinBrickController cbc=this.GetComponentInChildren<CoinBrickController>();
+			if(cbc!=null) {
+				cbc.HideCoin();
+			}
+//			GetComponent<Renderer> ().material = ResourceMgr.Instance ().m_BrickMtls [ResourceMgr.MTL_ID_EMPTY];
 		}
 
 	}
@@ -89,7 +94,8 @@ public class Brick :  Object3d, IPoolable
 		transform.localRotation = Quaternion.identity;
 		GetComponent<Collider> ().material = ResourceMgr.Instance ().m_Ice_PMtl;
 		if (m_IsCoin) {
-			GetComponent<Renderer> ().material = ResourceMgr.Instance ().m_BrickMtls [ResourceMgr.MTL_ID_EMPTY];
+//			GetComponent<Renderer> ().material = ResourceMgr.Instance ().m_BrickMtls [ResourceMgr.MTL_ID_EMPTY];
+			SetBrickChild();
 		}
 		m_IsCoin = false;
 		m_IsCoinAbsorbed=false;

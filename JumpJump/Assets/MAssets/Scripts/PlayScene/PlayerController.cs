@@ -18,7 +18,6 @@ public class PlayerController : MonoBehaviour
 	Vector3 m_OldVelocity;
 	public Vector3 m_Gravity = new Vector3 (0, -9.8f, 0);
 
-
 	float GetMoveSpeed ()
 	{
 		return m_OnGround ? moveSpeed.x : moveSpeed.x * 0.9f;
@@ -45,6 +44,9 @@ public class PlayerController : MonoBehaviour
 		m_Unbeatable_Timer = new MTimer (1f);
 		m_Unbeatable_Timer.OnTime += OnUnbeatable_Over;
 
+		m_Skill_Timer = new MTimer (10f);
+		m_Skill_Timer.OnTime += OnSkill_Over;
+
 
 	}
 
@@ -58,7 +60,11 @@ public class PlayerController : MonoBehaviour
 		m_JumpValidateTime = 0;
 		m_Rigidbody.velocity = Vector3.zero;
 		m_Renderer.material = m_InitMtl;
-		
+		m_Unbeatable_Timer.Pause ();
+		m_IsUnbeatable = false;
+		vel_Type = VEL_TYPE_NOMAL;
+		moveSpeed = m_InitMoveSpeed;
+		m_Skill_Timer.Pause ();
 		
 	}
 
@@ -79,6 +85,7 @@ public class PlayerController : MonoBehaviour
 		CheckFailed ();
 		m_OldVelocity = m_Rigidbody.velocity;
 		m_Unbeatable_Timer.Update ();
+		m_Skill_Timer.Update ();
 
 		tmp = transform.position;
 		tmp.z = 0;
@@ -151,7 +158,7 @@ public class PlayerController : MonoBehaviour
 
 	#region event
 	float m_JumpValidateTime = 0;
-	public float m_Max_JumpValidateTime=0.05f;
+	public float m_Max_JumpValidateTime = 0.05f;
 	
 	public void OnTouchDownScreen ()
 	{
@@ -166,17 +173,55 @@ public class PlayerController : MonoBehaviour
 			m_JumpTimes++;
 		}
 	}
-	
+
+	MTimer m_Skill_Timer;
+	float m_Skill_Duration = 10f;
+	int vel_Type = 0;
+	const  int VEL_TYPE_NOMAL = 0;
+	const int VEL_TYPE_SPEEDUP = 1;
+	const int VEL_TYPE_SPEEDDOWN = 2;
+
+	void UpdateVel ()
+	{
+		if (m_IsUnbeatable)
+			return;
+		switch (vel_Type) {
+		case VEL_TYPE_NOMAL:
+			moveSpeed.x = m_InitMoveSpeed.x;
+			break;
+		case VEL_TYPE_SPEEDUP:
+			moveSpeed.x = m_InitMoveSpeed.x * 1.5f;
+			break;
+		case VEL_TYPE_SPEEDDOWN:
+			moveSpeed.x = m_InitMoveSpeed.x * 0.5f;
+			break;
+		}
+	}
+
 	public void OnSkill_SpeedUp ()
 	{
-		moveSpeed.x = m_InitMoveSpeed.x * 1.5f;
-		DebuggerUtil.Log (" on skill speed up");
+		vel_Type = VEL_TYPE_SPEEDUP;
+		UpdateVel ();
+		m_Skill_Timer.Restart (false, m_Skill_Duration);
+
+//		moveSpeed.x = m_InitMoveSpeed.x * 1.5f;
+		DebuggerUtil.Log (" start on skill speed up");
 	}
 	
 	public void OnSkill_SlownDown ()
 	{
-		moveSpeed.x = m_InitMoveSpeed.x * 0.5f;
-		DebuggerUtil.Log (" on skill slown down");
+		vel_Type = VEL_TYPE_SPEEDDOWN;
+		UpdateVel ();
+		m_Skill_Timer.Restart (false, m_Skill_Duration);
+//		moveSpeed.x = m_InitMoveSpeed.x * 0.5f;
+		DebuggerUtil.Log (" start on skill slown down");
+	}
+
+	void OnSkill_Over ()
+	{
+		vel_Type = VEL_TYPE_NOMAL;
+		UpdateVel ();
+		m_Skill_Timer.Pause ();
 	}
 
 	#endregion
@@ -287,17 +332,17 @@ public class PlayerController : MonoBehaviour
 				return;
 			case FunctionType.REMOVE:
 				SetEmptyFunction ();
-				GameData.Instance().M_RunningData.M_RoleState="Normal";
+				GameData.Instance ().M_RunningData.M_RoleState = "Normal";
 				break;
 			case FunctionType.JUMP_HEIGHTER:
 				SetEmptyFunction ();
 				moveSpeed.y = m_InitMoveSpeed.y * 1.2f;
-				GameData.Instance().M_RunningData.M_RoleState="Higher";
+				GameData.Instance ().M_RunningData.M_RoleState = "Higher";
 				break;
 			case FunctionType.JUMP_TWICE:
 				SetEmptyFunction ();
 				m_MaxJumpTimes = 2;
-				GameData.Instance().M_RunningData.M_RoleState="Twice";
+				GameData.Instance ().M_RunningData.M_RoleState = "Twice";
 				break;
 			case FunctionType.SPEED_UP:
 				SetEmptyFunction ();
@@ -310,10 +355,14 @@ public class PlayerController : MonoBehaviour
 			case FunctionType.UNBEATABLE:
 				SetEmptyFunction ();
 				OnUnbeatable ();
-				GameData.Instance().M_RunningData.M_RoleState="Unbeatable";
+				GameData.Instance ().M_RunningData.M_RoleState = "Unbeatable";
 				break;
 			}
-			m_Renderer.material=brick.GetComponentInChildren<Renderer>().material;
+			if (brick.M_FunctionType == FunctionType.REMOVE) {
+				m_Renderer.material=m_InitMtl;
+			} else {
+				m_Renderer.material = brick.GetComponentInChildren<Renderer> ().material;
+			}
 //			m_Renderer.material = brick.GetComponent<Renderer> ().material;
 
 			CheckOnCoinBrick (brick);
@@ -322,7 +371,7 @@ public class PlayerController : MonoBehaviour
 
 	void SetEmptyFunction ()
 	{
-		moveSpeed = m_InitMoveSpeed;
+		moveSpeed.y = m_InitMoveSpeed.y;
 		m_MaxJumpTimes = 1;
 	}
 	#endregion
@@ -351,8 +400,10 @@ public class PlayerController : MonoBehaviour
 		m_Rigidbody.velocity = Vector3.up * m_InitMoveSpeed.y;
 		CloseKinematicAndTrigger ();
 
-		GameData.Instance().M_RunningData.M_RoleState="Normal";
+		GameData.Instance ().M_RunningData.M_RoleState = "Normal";
 		m_Renderer.material = m_InitMtl;
+
+		UpdateVel ();
 	}
 
 	Vector3 m_Unbeatable_Vec = Vector3.zero;
@@ -420,8 +471,10 @@ public class PlayerController : MonoBehaviour
 
 	}
 
-	public float m_MangnetRange=0.6f;
-	void CheckMagnetRange(){
+	public float m_MangnetRange = 0.6f;
+
+	void CheckMagnetRange ()
+	{
 
 	}
 

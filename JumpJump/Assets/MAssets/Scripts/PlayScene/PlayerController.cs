@@ -471,7 +471,7 @@ public class PlayerController : MonoBehaviour
 
 	}
 
-	public float m_MangnetRange = 0.6f;
+	public float m_MangnetRange =0.6f;// 0.6f;
 
 	void CheckMagnetRange ()
 	{

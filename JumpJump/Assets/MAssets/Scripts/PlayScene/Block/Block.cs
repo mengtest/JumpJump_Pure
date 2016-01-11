@@ -526,7 +526,7 @@ public class Block : Object3d , IPoolable
 	{
 		for (int i=0; i<m_Bricks.Count; i++) {
 
-			if (MathUtil.IndependentProbability (0.5f) && m_Bricks [i].M_FunctionType == FunctionType.EMPTY) {
+			if (MathUtil.IndependentProbability (0.2f) && m_Bricks [i].M_FunctionType == FunctionType.EMPTY) {
 				m_Bricks [i].M_IsCoin = true;
 			}
 		}

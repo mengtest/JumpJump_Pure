@@ -56,7 +56,7 @@ public class PlaySceneController : MonoBehaviour
 
 		LoadPrefab ();
 
-
+		ResourceMgr.Instance().LoadResource_Play();
 		Init ();
 
 

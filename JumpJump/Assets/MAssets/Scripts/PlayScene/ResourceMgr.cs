@@ -17,23 +17,19 @@ public class ResourceMgr
 	{
 		LoadBrickMtl ();
 		LoadPhysicMtl ();
-		LoadCoinResource ();
+
 		LoadBrick ();
 	}
 
 	public void LoadResource_Editor ()
 	{
-		LoadBrickMtl ();
-		LoadPhysicMtl ();
-		LoadCoinResource ();
+
 	}
 
 	public void LoadResource_Play ()
 	{
-		LoadBrickMtl ();
-		LoadPhysicMtl ();
 		LoadCoinResource ();
-		LoadBrick ();
+		LoadMagnetResource();
 	}
 
 	#region brick
@@ -183,7 +179,7 @@ public class ResourceMgr
 	}
 	#endregion
 	
-	#region  props
+	#region  props coin
 	ObjectPool<CoinController> m_CoinController_Pool;
 	GameObject m_Coin_Prefab;
 	public const int COIN_INIT_NUM = 20;
@@ -221,6 +217,46 @@ public class ResourceMgr
 		m_CoinController_Pool.Init ();
 	}
 
+	#endregion
+
+	#region  props magnet
+	ObjectPool<MagnetController> m_MagnetController_Pool;
+	GameObject m_Magnet_Prefab;
+	public const int MAGNET_INIT_NUM = 10;
+	public const int MAGNET_ADD_NUM = 5;
+	
+	MagnetController NewMagnetController ()
+	{
+		GameObject go = GameObject.Instantiate (m_Magnet_Prefab) as GameObject;
+		MagnetController mC = go.GetComponent<MagnetController> ();
+		mC.IReset ();
+		return mC;
+	}
+	
+	public MagnetController GetMagnetController ()
+	{ 
+		return m_MagnetController_Pool.Obtain ();
+	}
+	
+	public void FreeMagnetController (MagnetController mC)
+	{
+		m_MagnetController_Pool.Free (mC);
+	}
+	
+	void DestoryMagnetResource ()
+	{
+		m_MagnetController_Pool.DestoryAll ();
+		m_MagnetController_Pool = null;
+	}
+	
+	void LoadMagnetResource ()
+	{
+		m_Magnet_Prefab = Resources.Load ("Props/Magnet") as GameObject;
+		m_MagnetController_Pool = new ObjectPool<MagnetController> (MAGNET_INIT_NUM, MAGNET_ADD_NUM);
+		m_MagnetController_Pool.NewObject = NewMagnetController;
+		m_MagnetController_Pool.Init ();
+	}
+	
 	#endregion
 
 }

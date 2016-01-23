@@ -17,6 +17,7 @@ public class PlayerController : MonoBehaviour
 	int m_MaxJumpTimes = 1;
 	Vector3 m_OldVelocity;
 	public Vector3 m_Gravity = new Vector3 (0, -9.8f, 0);
+	public GameObject magnetEffect;
 
 	float GetMoveSpeed ()
 	{
@@ -47,6 +48,8 @@ public class PlayerController : MonoBehaviour
 		m_Skill_Timer = new MTimer (10f);
 		m_Skill_Timer.OnTime += OnSkill_Over;
 
+		InitMagnetTimer();
+
 
 	}
 
@@ -65,7 +68,9 @@ public class PlayerController : MonoBehaviour
 		vel_Type = VEL_TYPE_NOMAL;
 		moveSpeed = m_InitMoveSpeed;
 		m_Skill_Timer.Pause ();
-		
+		m_AttachMagnetTimer.Pause();
+		PlayGameInstance.INSTANCE.PSC.PC.m_MagnetRange=0.6f;
+		magnetEffect.SetActive(false);
 	}
 
 	#endregion
@@ -86,6 +91,7 @@ public class PlayerController : MonoBehaviour
 		m_OldVelocity = m_Rigidbody.velocity;
 		m_Unbeatable_Timer.Update ();
 		m_Skill_Timer.Update ();
+		m_AttachMagnetTimer.Update();
 
 		tmp = transform.position;
 		tmp.z = 0;
@@ -138,6 +144,11 @@ public class PlayerController : MonoBehaviour
 			Brick brick = other.gameObject.GetComponent<Brick> ();
 			UnbeatableOnBrick (brick);
 		}
+//		if(other.name=="Magnet"){
+//			AttachMagnet();
+//			MagnetController mC=other.gameObject.GetComponent<MagnetController>();
+//			mC.gameObject.SetActive(false);
+//		}
 	}
 
 	void OnTriggerStay (Collider other)
@@ -471,12 +482,37 @@ public class PlayerController : MonoBehaviour
 
 	}
 
-	public float m_MangnetRange =0.6f;// 0.6f;
+	public float m_MagnetRange =0.6f;// 0.6f;
 
 	void CheckMagnetRange ()
 	{
 
 	}
+
+	#endregion
+
+	#region magnet
+	MTimer m_AttachMagnetTimer;
+	float magnetDuration=5f;
+
+	void InitMagnetTimer(){
+		m_AttachMagnetTimer=new MTimer(magnetDuration);
+		m_AttachMagnetTimer.Init();
+		m_AttachMagnetTimer.OnTime+=OnAttachMagnetOver;
+	}
+
+	public void AttachMagnet(){
+		m_AttachMagnetTimer.Restart(false);
+		PlayGameInstance.INSTANCE.PSC.PC.m_MagnetRange=5f;
+		magnetEffect.SetActive(true);
+	}
+
+	void OnAttachMagnetOver(){
+		m_AttachMagnetTimer.Pause();
+		PlayGameInstance.INSTANCE.PSC.PC.m_MagnetRange=0.6f;
+		magnetEffect.SetActive(false);
+	}
+
 
 	#endregion
 	

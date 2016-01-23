@@ -520,6 +520,7 @@ public class Block : Object3d , IPoolable
 		SetBrickMoveInParam ();
 		SetBrickMoveOutParam ();
 		SetRandomCoin ();
+		SetRandomMagnet();
 	}
 
 	void SetRandomCoin ()
@@ -536,6 +537,18 @@ public class Block : Object3d , IPoolable
 		}
 	}
 
+	public void SetRandomMagnet(){
+		float minSpacing=10f;
+		float lastPotX=0f;
+		List<Brick> topsideBricks=GetTopsideBricks();
+		for(int i=0;i<topsideBricks.Count;i++){
+
+			if (MathUtil.IndependentProbability (0.1f) && topsideBricks[i].M_CurPot.x-lastPotX>minSpacing){
+				lastPotX=topsideBricks[i].M_CurPot.x;
+				topsideBricks[i].M_AttachMagnet=true;
+			}
+		}
+	}
 
 	#endregion
 
@@ -589,7 +602,7 @@ public class Block : Object3d , IPoolable
 	}
 
 	#region update brick resource
-public	void UpdateBrickResource ()
+	public	void UpdateBrickResource ()
 	{
 		Brick brick;
 		MeshFilter meshFilter;
@@ -605,11 +618,48 @@ public	void UpdateBrickResource ()
 				GameObject.DestroyImmediate (meshRenderer);
 
 //			if (brick.transform.childCount == 0) {
-				brick.SetBrickChild();
+			brick.SetBrickChild ();
 //			}
 		}
 		for (int i=0; i<m_Blocks.Count; i++) {
 			m_Blocks [i].UpdateBrickResource ();
+		}
+	}
+
+	#endregion
+
+	#region topside brick
+	Dictionary<int,Brick> columnBrickMap = new Dictionary<int, Brick> ();
+
+	public List<Brick> GetTopsideBricks ()
+	{
+		columnBrickMap.Clear ();
+
+		List<Brick> allBricks = new List<Brick> ();
+		GetAllBricks (allBricks);
+		for (int i=0; i<allBricks.Count; i++) {
+			int column = allBricks [i].CurColumn;
+			if (columnBrickMap.ContainsKey (column)) {
+				Brick b = columnBrickMap [column];
+				if (b.M_CurPot.y < allBricks [i].M_CurPot.y) {
+					columnBrickMap[column]=allBricks[i];
+				}
+			} else {
+				columnBrickMap.Add (column,allBricks [i]);
+			}
+		}
+		List<Brick> topsideBricks = new List<Brick> (columnBrickMap.Values);
+		columnBrickMap.Clear();
+		return topsideBricks;
+	}
+
+	public void GetAllBricks (List<Brick> allBricks)
+	{
+		for (int i=0; i<m_Bricks.Count; i++) {
+			allBricks.Add (m_Bricks [i]);
+		}
+		for (int i=0; i<m_Blocks.Count; i++) {
+			m_Blocks [i].GetAllBricks (allBricks);
 		}
 	}
 

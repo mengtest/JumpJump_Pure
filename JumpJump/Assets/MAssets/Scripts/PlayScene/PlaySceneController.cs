@@ -13,9 +13,9 @@ public class PlaySceneController : MonoBehaviour
 	}
 
 	public Block block_Root;
-	public float moveDelayTime_Unit = 0.5f;
-	public float moveDurationTime_Unit = 1f;
-	public float ConditionTime_Unit = 0.5f;
+	public float moveDelayTime_Unit = 0.1f;
+	public float moveDurationTime_Unit = 0.2f;
+	public float ConditionTime_Unit = 0.1f;
 	GameObject m_Block_Head_1_Prefab;
 	GameObject m_Block_1_Prefab;
 	GameObject m_Block_2_Prefab;

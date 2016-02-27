@@ -59,6 +59,7 @@ public class CoinController : MonoBehaviour,IPoolable
 	void EndAnimation(){
 		m_Animation=false;
 		ResourceMgr.Instance().FreeCoinController(this);
+		SoundManager.Instance().PlaySound2D(SoundManager.gold_ID,1f);
 	}
 
 	void UpdateAniamtionTargetPot(){

@@ -49,10 +49,12 @@ public class PlayerController : MonoBehaviour
 		m_Skill_Timer.OnTime += OnSkill_Over;
 
 		InitMagnetTimer();
+		m_MagnetRange=m_InitMagnetRange;
 
 
 	}
 
+	float m_InitMagnetRange=1.1f;
 	public void Reset ()
 	{
 		transform.position = m_InitPot;
@@ -69,7 +71,7 @@ public class PlayerController : MonoBehaviour
 		moveSpeed = m_InitMoveSpeed;
 		m_Skill_Timer.Pause ();
 		m_AttachMagnetTimer.Pause();
-		PlayGameInstance.INSTANCE.PSC.PC.m_MagnetRange=0.6f;
+		PlayGameInstance.INSTANCE.PSC.PC.m_MagnetRange=m_InitMagnetRange;
 		magnetEffect.SetActive(false);
 	}
 
@@ -482,7 +484,7 @@ public class PlayerController : MonoBehaviour
 
 	}
 
-	public float m_MagnetRange =0.6f;// 0.6f;
+	public float m_MagnetRange =1f;// 0.6f;
 
 	void CheckMagnetRange ()
 	{
@@ -509,7 +511,7 @@ public class PlayerController : MonoBehaviour
 
 	void OnAttachMagnetOver(){
 		m_AttachMagnetTimer.Pause();
-		PlayGameInstance.INSTANCE.PSC.PC.m_MagnetRange=0.6f;
+		PlayGameInstance.INSTANCE.PSC.PC.m_MagnetRange=m_InitMagnetRange;
 		magnetEffect.SetActive(false);
 	}
 

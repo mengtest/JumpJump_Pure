@@ -57,7 +57,7 @@ ModelImporter:
     400046: Shoulder_R
     400048: Wrist_L
     400050: Wrist_R
-    7400000: Take 001
+    7400000: run
     9500000: //RootNode
   materials:
     importMaterials: 1
@@ -78,7 +78,85 @@ ModelImporter:
     animationScaleError: .5
     animationWrapMode: 0
     extraExposedTransformPaths: []
-    clipAnimations: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: run
+      takeName: Take 001
+      firstFrame: 1
+      lastFrame: 37
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Root_M
+        weight: 1
+      - path: Root_M/BackA_M
+        weight: 1
+      - path: Root_M/BackA_M/BackB_M
+        weight: 1
+      - path: Root_M/BackA_M/BackB_M/Chest_M
+        weight: 1
+      - path: Root_M/BackA_M/BackB_M/Chest_M/Neck_M
+        weight: 1
+      - path: Root_M/BackA_M/BackB_M/Chest_M/Neck_M/Head_M
+        weight: 1
+      - path: Root_M/BackA_M/BackB_M/Chest_M/Neck_M/Head_M/Hair_M
+        weight: 1
+      - path: Root_M/BackA_M/BackB_M/Chest_M/Scapula_L
+        weight: 1
+      - path: Root_M/BackA_M/BackB_M/Chest_M/Scapula_L/Shoulder_L
+        weight: 1
+      - path: Root_M/BackA_M/BackB_M/Chest_M/Scapula_L/Shoulder_L/Elbow_L
+        weight: 1
+      - path: Root_M/BackA_M/BackB_M/Chest_M/Scapula_L/Shoulder_L/Elbow_L/Wrist_L
+        weight: 1
+      - path: Root_M/BackA_M/BackB_M/Chest_M/Scapula_R
+        weight: 1
+      - path: Root_M/BackA_M/BackB_M/Chest_M/Scapula_R/Shoulder_R
+        weight: 1
+      - path: Root_M/BackA_M/BackB_M/Chest_M/Scapula_R/Shoulder_R/Elbow_R
+        weight: 1
+      - path: Root_M/BackA_M/BackB_M/Chest_M/Scapula_R/Shoulder_R/Elbow_R/Wrist_R
+        weight: 1
+      - path: Root_M/Hip_L
+        weight: 1
+      - path: Root_M/Hip_L/Knee_L
+        weight: 1
+      - path: Root_M/Hip_L/Knee_L/Ankle_L
+        weight: 1
+      - path: Root_M/Hip_L/Knee_L/Ankle_L/MiddleToe1_L
+        weight: 1
+      - path: Root_M/Hip_L/Knee_L/Ankle_L/MiddleToe1_L/MiddleToe2_L
+        weight: 1
+      - path: Root_M/Hip_R
+        weight: 1
+      - path: Root_M/Hip_R/Knee_R
+        weight: 1
+      - path: Root_M/Hip_R/Knee_R/Ankle_R
+        weight: 1
+      - path: Root_M/Hip_R/Knee_R/Ankle_R/MiddleToe1_R
+        weight: 1
+      - path: Root_M/Hip_R/Knee_R/Ankle_R/MiddleToe1_R/MiddleToe2_R
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
     isReadable: 1
   meshes:
     lODScreenPercentages: []

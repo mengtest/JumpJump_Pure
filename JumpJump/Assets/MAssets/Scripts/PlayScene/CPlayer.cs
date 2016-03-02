@@ -21,7 +21,9 @@ public class CPlayer
 	StateMachine<CPlayer> baseStateMachine;
 	public static Idle_State		 g_Idle_State = new Idle_State ();
 	public static Run_State		     g_Run_state = new Run_State ();
-	public static Jump_State 		 g_Jump_State = new Jump_State ();
+	public static Jump_Up_State 		 g_Jump_Up_State = new Jump_Up_State ();
+	public static Jump_Down_State 		 g_Jump_Down_State = new Jump_Down_State ();
+	public static Jump_OnGround_State		 g_Jump_OnGround_State = new Jump_OnGround_State ();
 
 	public State<CPlayer>  CurState {
 		get { return baseStateMachine.CurState;}
@@ -42,51 +44,142 @@ public class CPlayer
 	#endregion
 
 
+	PlayerController m_PC;
+
+	public CPlayer (PlayerController pC)
+	{
+		this.m_PC = pC;
+		baseStateMachine = new StateMachine<CPlayer> ();
+		Init();
+	}
+
+	public void Init(){
+		baseStateMachine.Init (this, g_Idle_State, null, null);
+	}
+
+	public void Update ()
+	{
+
+		baseStateMachine.Update ();
+	}
+
+
+
+	#region idle
 	
 	public  void Idle_Execute ()
 	{
-	
+		if (!m_PC.M_OnGround) {
+			ChangeBaseState (g_Jump_Up_State);
+			return;
+		}
+		if (m_PC.MoveSpeed_X > 0.1f) {
+			ChangeBaseState (g_Run_state);
+		}
 	}
 
 	public  void Idle_Enter ()
 	{
 	
+		m_PC.playerAnimator.PlayAnimation (PlayerAnimator.AnimatorState.Idle);
+		Debug.Log(" idle enter");
 	}
 
 	public  void Idle_Exit ()
 	{
 
 	}
+#endregion
+
+	#region run
 
 	public  void Run_Execute ()
 	{
-		
+		if (!m_PC.M_OnGround) {
+			ChangeBaseState (g_Jump_Up_State);
+			return;
+		}
+		if (m_PC.MoveSpeed_X < 0.1f) {
+			ChangeBaseState (g_Idle_State);
+		}
 	}
 	
 	public  void Run_Enter ()
 	{
-		
+		m_PC.playerAnimator.PlayAnimation (PlayerAnimator.AnimatorState.Run);
+		Debug.Log(" run enter");
 	}
 	
 	public  void Run_Exit ()
 	{
 		
 	}
+	#endregion
 
-	public  void Jump_Execute ()
+	#region jump_Up
+
+	public  void Jump_Up_Execute ()
+	{
+		if(m_PC.MoveSpeed_Y<0){
+			ChangeBaseState(g_Jump_Down_State);
+		}
+//		Debug.Log(" y="+m_PC.MoveSpeed_Y);
+	}
+	
+	public  void Jump_Up_Enter ()
+	{
+		m_PC.playerAnimator.PlayAnimation (PlayerAnimator.AnimatorState.Jump_up);
+		Debug.Log(" jump up enter");
+	}
+	
+	public  void Jump_Up_Exit ()
+	{
+		
+	}
+
+	#endregion
+
+
+	#region jump_Down
+	
+	public  void Jump_Down_Execute ()
+	{
+		if(m_PC.M_OnGround){
+			ChangeBaseState(g_Jump_OnGround_State);
+		}
+	}
+	
+	public  void Jump_Down_Enter ()
+	{
+		m_PC.playerAnimator.PlayAnimation (PlayerAnimator.AnimatorState.Jump_down);
+		Debug.Log(" jump down enter");
+	}
+	
+	public  void Jump_Down_Exit ()
 	{
 		
 	}
 	
-	public  void Jump_Enter ()
+	#endregion
+
+	#region jump_OnGround
+	
+	public  void Jump_OnGround_Execute ()
+	{
+		ChangeBaseState(g_Idle_State);
+	}
+	
+	public  void Jump_OnGround_Enter ()
+	{
+		m_PC.playerAnimator.PlayAnimation (PlayerAnimator.AnimatorState.Jump_onGround);
+		Debug.Log(" jump on ground enter");
+	}
+	
+	public  void Jump_OnGround_Exit ()
 	{
 		
 	}
 	
-	public  void Jump_Exit ()
-	{
-		
-	}
-
+	#endregion
 
 }

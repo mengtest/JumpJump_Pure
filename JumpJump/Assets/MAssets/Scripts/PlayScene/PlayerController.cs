@@ -10,6 +10,13 @@ public class PlayerController : MonoBehaviour
 	Renderer m_Renderer;
 	Material m_InitMtl;
 	bool m_OnGround = false;
+
+	public bool M_OnGround {
+		get {
+			return m_OnGround;
+		}
+	}
+
 	SphereCollider m_sphereCollider;
 	Vector3 m_InitPot;
 	Vector3 m_InitRotate;
@@ -18,11 +25,22 @@ public class PlayerController : MonoBehaviour
 	Vector3 m_OldVelocity;
 	public Vector3 m_Gravity = new Vector3 (0, -9.8f, 0);
 	public GameObject magnetEffect;
+	public PlayerAnimator playerAnimator;
+	CPlayer player;
 
 	float GetMoveSpeed ()
 	{
 		return m_OnGround ? moveSpeed.x : moveSpeed.x * 0.9f;
 	}
+
+	public float MoveSpeed_X {
+		get { return m_Rigidbody.velocity.x;}
+	}
+
+	public float MoveSpeed_Y{
+		get {return m_Rigidbody.velocity.y;}
+	}
+
 	
 	#region init and reset
 	void Init ()
@@ -48,13 +66,15 @@ public class PlayerController : MonoBehaviour
 		m_Skill_Timer = new MTimer (10f);
 		m_Skill_Timer.OnTime += OnSkill_Over;
 
-		InitMagnetTimer();
-		m_MagnetRange=m_InitMagnetRange;
+		InitMagnetTimer ();
+		m_MagnetRange = m_InitMagnetRange;
 
+		player = new CPlayer (this);
 
 	}
 
-	float m_InitMagnetRange=1.1f;
+	float m_InitMagnetRange = 1.1f;
+
 	public void Reset ()
 	{
 		transform.position = m_InitPot;
@@ -70,9 +90,10 @@ public class PlayerController : MonoBehaviour
 		vel_Type = VEL_TYPE_NOMAL;
 		moveSpeed = m_InitMoveSpeed;
 		m_Skill_Timer.Pause ();
-		m_AttachMagnetTimer.Pause();
-		PlayGameInstance.INSTANCE.PSC.PC.m_MagnetRange=m_InitMagnetRange;
-		magnetEffect.SetActive(false);
+		m_AttachMagnetTimer.Pause ();
+		PlayGameInstance.INSTANCE.PSC.PC.m_MagnetRange = m_InitMagnetRange;
+		magnetEffect.SetActive (false);
+		player.Init();
 	}
 
 	#endregion
@@ -93,12 +114,19 @@ public class PlayerController : MonoBehaviour
 		m_OldVelocity = m_Rigidbody.velocity;
 		m_Unbeatable_Timer.Update ();
 		m_Skill_Timer.Update ();
-		m_AttachMagnetTimer.Update();
+		m_AttachMagnetTimer.Update ();
 
+		FixedZ ();
+		if (player != null)
+			player.Update ();
+
+	}
+
+	void FixedZ ()
+	{
 		tmp = transform.position;
 		tmp.z = 0;
 		transform.position = tmp;
-
 	}
 
 	Vector3 tmp;
@@ -372,7 +400,7 @@ public class PlayerController : MonoBehaviour
 				break;
 			}
 			if (brick.M_FunctionType == FunctionType.REMOVE) {
-				m_Renderer.material=m_InitMtl;
+				m_Renderer.material = m_InitMtl;
 			} else {
 				m_Renderer.material = brick.GetComponentInChildren<Renderer> ().material;
 			}
@@ -484,7 +512,7 @@ public class PlayerController : MonoBehaviour
 
 	}
 
-	public float m_MagnetRange =1f;// 0.6f;
+	public float m_MagnetRange = 1f;// 0.6f;
 
 	void CheckMagnetRange ()
 	{
@@ -495,27 +523,31 @@ public class PlayerController : MonoBehaviour
 
 	#region magnet
 	MTimer m_AttachMagnetTimer;
-	float magnetDuration=5f;
+	float magnetDuration = 5f;
 
-	void InitMagnetTimer(){
-		m_AttachMagnetTimer=new MTimer(magnetDuration);
-		m_AttachMagnetTimer.Init();
-		m_AttachMagnetTimer.OnTime+=OnAttachMagnetOver;
+	void InitMagnetTimer ()
+	{
+		m_AttachMagnetTimer = new MTimer (magnetDuration);
+		m_AttachMagnetTimer.Init ();
+		m_AttachMagnetTimer.OnTime += OnAttachMagnetOver;
 	}
 
-	public void AttachMagnet(){
-		m_AttachMagnetTimer.Restart(false);
-		PlayGameInstance.INSTANCE.PSC.PC.m_MagnetRange=5f;
-		magnetEffect.SetActive(true);
+	public void AttachMagnet ()
+	{
+		m_AttachMagnetTimer.Restart (false);
+		PlayGameInstance.INSTANCE.PSC.PC.m_MagnetRange = 5f;
+		magnetEffect.SetActive (true);
 	}
 
-	void OnAttachMagnetOver(){
-		m_AttachMagnetTimer.Pause();
-		PlayGameInstance.INSTANCE.PSC.PC.m_MagnetRange=m_InitMagnetRange;
-		magnetEffect.SetActive(false);
+	void OnAttachMagnetOver ()
+	{
+		m_AttachMagnetTimer.Pause ();
+		PlayGameInstance.INSTANCE.PSC.PC.m_MagnetRange = m_InitMagnetRange;
+		magnetEffect.SetActive (false);
 	}
 
 
 	#endregion
 	
+
 }

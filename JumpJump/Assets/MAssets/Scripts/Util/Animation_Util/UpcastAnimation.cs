@@ -88,7 +88,7 @@ public class UpcastAnimation : MonoBehaviour
 		GetRandom ();
 		initPot = transform.localPosition;
 		transform.localScale = initScale;
-		DebuggerUtil.Log(" init pot="+initPot);
+//		DebuggerUtil.Log(" init pot="+initPot);
 	}
 
 	

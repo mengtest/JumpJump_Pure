@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class SkySreenUtils : MonoBehaviour
+public class SreenUtils : MonoBehaviour
 {
 
     public enum ScreenSizeType

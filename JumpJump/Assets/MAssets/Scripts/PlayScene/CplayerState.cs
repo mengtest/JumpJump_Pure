@@ -1,6 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+public class CPlayerState
+{
+
+}
+
 #region Idle
 public class Idle_State :State<CPlayer>
 {

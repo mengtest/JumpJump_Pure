@@ -13,12 +13,12 @@ public class PlayPanel : UIWindow {
 	public Button fastButton;
 	public Text fastText;
 
-	SkyDelayAnimation count;
+	DelayAction count;
 
 	public override void Init ()
 	{
 		base.Init ();
-		count = new SkyDelayAnimation (10f,startAction,actionActive);
+		count = new DelayAction (10f,startAction,actionActive);
 	}
 
   public void SetScore(string score){

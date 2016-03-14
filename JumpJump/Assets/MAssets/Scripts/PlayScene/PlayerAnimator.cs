@@ -33,6 +33,12 @@ public class PlayerAnimator : MonoBehaviour
 	
 	}
 
+//	public void Reset(){
+//		lastState = AnimatorState.Idle;
+//		animator.SetFloat (PLAYER_STATE, (int)lastState);
+//		animator.SetBool (SAME_STATE, true);
+//	}
+
 	public void PlayAnimation (AnimatorState animatorState)
 	{
 

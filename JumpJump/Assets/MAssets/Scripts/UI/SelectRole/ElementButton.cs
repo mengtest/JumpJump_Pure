@@ -11,11 +11,6 @@ public class ElementButton : SGElementBase
 //    public static string SPECIAL_COINS_DELAYTIME = "SpecialCoinsDelaytime"; 
     private Text mytext;
     private Button b;
-    private bool isSpecial = false;
-    public static string SPECIAL_TAG = "Special";
-    private static string SPECIAL_START_TIME = "SpecialStartTime";
-    private long specialStartTime;
-    private DateTime specialStartDateTime;
 
     public override bool Init (int index, SGScrollPanel mySkyScrollPanel)
     {
@@ -24,7 +19,6 @@ public class ElementButton : SGElementBase
         gameObject.name = "ElementButton" + index;
         b = gameObject.transform.parent.Find (gameObject.name).GetComponent<Button> ();
         mytext = gameObject.transform.Find ("Text").GetComponent<Text> ();
-        isSpecial = config.ConfigInfs [index].IsSpecial;
         if (((ElementButtonConfig)(MySkyScrollPanel.Config)).ConfigInfs [index].sprite == null)
             mytext.text = config.ConfigInfs [index].desc;
         else

@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using UI.UIComponent.ScrollList;
 
-public class MyScrollPanel : SGScrollPanel
+public class CircleScrollPanel : SGScrollPanel
 {
 
     public float pauseTime = 1f;

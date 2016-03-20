@@ -71,19 +71,19 @@ public class CircleScrollPanel : SGScrollPanel
         base.onBeginDrag (eventData);
         StopAllCoroutines ();
     
-        if (myscrollBar.value > (1 - 0.5f / (GetElementCount () - 1))) {
-            for (int i=0; i<(GetElementCount ())/2; i++) {
-                myScrollList.transform.GetChild (0).SetSiblingIndex (GetElementCount () - 1);
-            }
-            index = (GetElementCount () - 1) / 2;
-            myscrollBar.value = (index) * 1f / (GetElementCount () - 1);
-        } else if (myscrollBar.value < (0.5f / (GetElementCount () - 1))) {
-            for (int i=0; i<(GetElementCount ())/2; i++) {
-                myScrollList.transform.GetChild (0).SetSiblingIndex (GetElementCount () - 1);
-            }
-            index = (GetElementCount () - 1) / 2;
-            myscrollBar.value = (index + 1) * 1f / (GetElementCount () - 1);
-        }
+//        if (myscrollBar.value > (1 - 0.5f / (GetElementCount () - 1))) {
+//            for (int i=0; i<(GetElementCount ())/2; i++) {
+//                myScrollList.transform.GetChild (0).SetSiblingIndex (GetElementCount () - 1);
+//            }
+//            index = (GetElementCount () - 1) / 2;
+//            myscrollBar.value = (index) * 1f / (GetElementCount () - 1);
+//        } else if (myscrollBar.value < (0.5f / (GetElementCount () - 1))) {
+//            for (int i=0; i<(GetElementCount ())/2; i++) {
+//                myScrollList.transform.GetChild (0).SetSiblingIndex (GetElementCount () - 1);
+//            }
+//            index = (GetElementCount () - 1) / 2;
+//            myscrollBar.value = (index + 1) * 1f / (GetElementCount () - 1);
+//        }
         lastDragPosition.x = eventData.position.x;
         lastDragPosition.y = eventData.position.y;
         lastTime = Time.time;
@@ -182,7 +182,7 @@ public class CircleScrollPanel : SGScrollPanel
         }
        
         if (!((SGScrollRect)myScrollRect).IsDraging) {
-            AutoScroll = true;
+//            AutoScroll = true;
         }
     }
 

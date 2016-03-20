@@ -1,15 +1,15 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using UnityEngine.EventSystems;
 
 namespace UI.UIComponent.ScrollList
 {
-		public class SkyElementBase : MonoBehaviour,IPointerDownHandler,IPointerUpHandler,IPointerClickHandler
+		public class SGElementBase : MonoBehaviour,IPointerDownHandler,IPointerUpHandler,IPointerClickHandler
 		{
 
-				protected SkyScrollPanel MySkyScrollPanel;
+				protected SGScrollPanel MySkyScrollPanel;
 			
-				public virtual bool Init (int index, SkyScrollPanel mySkyScrollPanel)
+				public virtual bool Init (int index, SGScrollPanel mySkyScrollPanel)
 				{
 						this.MySkyScrollPanel = mySkyScrollPanel;
                         return true;

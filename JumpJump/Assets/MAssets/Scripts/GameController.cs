@@ -30,6 +30,11 @@ public class GameController : MonoBehaviour {
 		playPanel.gameObject.SetActive (false);
 		pausePanel.gameObject.SetActive (false);
 		gameOverPanel.gameObject.SetActive (false);
+
+		mainPanel.Init ();
+		playPanel.Init ();
+		pausePanel.Init ();
+		gameOverPanel.Init ();
 	}
 
 	public static GameController GetInstance(){

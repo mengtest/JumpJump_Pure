@@ -1,0 +1,3 @@
+[submodule "JumpJump/Assets/SGLib"]
+	path = JumpJump/Assets/SGLib
+	url = https://github.com/saoniankeji/SGLib.git

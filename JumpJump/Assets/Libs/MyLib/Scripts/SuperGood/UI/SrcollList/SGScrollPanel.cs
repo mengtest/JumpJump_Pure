@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
@@ -7,19 +7,21 @@ using UnityEngine.EventSystems;
 
 namespace UI.UIComponent.ScrollList
 {
-    public class SkyScrollPanel : MonoBehaviour
+    public class SGScrollPanel : MonoBehaviour
     {
         public bool AutoScroll = true;
-        public SkyElementBase BaseElement;
+        public SGElementBase BaseElement;
         public Vector2 ElementLocalSize = new Vector2 (0.8f, 0.8f);
         public int ShowNumber = 1;
-        public SkyElementConfig Config;
+        public SGElementConfig Config;
         public List<Button> ElementButtons = new List<Button>();
 
         // Use this for initialization
         void Start ()
         {
-            init ();
+
+				init ();
+
         }
 
         private void init ()
@@ -49,9 +51,9 @@ namespace UI.UIComponent.ScrollList
         {
             myScrollRect = GetComponent<ScrollRect> ();
             myscrollBar = myScrollRect.horizontalScrollbar;
-            ((SkyScrollRect)myScrollRect).mySkyOnEndDrag = new SkyScrollRect.SkyOnEndDrag (onEndDrag);
-            ((SkyScrollRect)myScrollRect).mySkyOnBeginDrag = new SkyScrollRect.SkyOnBeginDrag (onBeginDrag);
-            ((SkyScrollRect)myScrollRect).mySkyOnDrag = new SkyScrollRect.SkyOnDrag (onDrag);
+            ((SGScrollRect)myScrollRect).mySkyOnEndDrag = new SGScrollRect.SkyOnEndDrag (onEndDrag);
+            ((SGScrollRect)myScrollRect).mySkyOnBeginDrag = new SGScrollRect.SkyOnBeginDrag (onBeginDrag);
+            ((SGScrollRect)myScrollRect).mySkyOnDrag = new SGScrollRect.SkyOnDrag (onDrag);
             myScrollList = GameObject.Find (SCROLL_LIST);
             myGridLayoutGroup = myScrollList.GetComponent<GridLayoutGroup> ();
         }
@@ -87,7 +89,7 @@ namespace UI.UIComponent.ScrollList
         {
             ElementButtons.Clear();
             for (int i=0; i<Config.GetCount(); i++) {
-                SkyElementBase element = Instantiate (BaseElement) as SkyElementBase;
+                SGElementBase element = Instantiate (BaseElement) as SGElementBase;
                 element.transform.SetParent (myScrollList.gameObject.transform, false);
                 if(!element.Init (i, this)){
                     Destroy (element.gameObject);
@@ -131,7 +133,7 @@ namespace UI.UIComponent.ScrollList
         public virtual void OnSubPointUp ()
         {
             //Debug.Log ("OnSubPointUp");
-            if (!((SkyScrollRect)myScrollRect).IsDraging)
+            if (!((SGScrollRect)myScrollRect).IsDraging)
                 AutoScroll = true;
         }
 

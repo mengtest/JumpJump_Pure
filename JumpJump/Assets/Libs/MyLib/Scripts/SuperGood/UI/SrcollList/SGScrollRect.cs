@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 
 namespace UI.UIComponent.ScrollList
 {
-    public class SkyScrollRect : ScrollRect
+    public class SGScrollRect : ScrollRect
     {
         public delegate void SkyOnBeginDrag (UnityEngine.EventSystems.PointerEventData eventData);
 

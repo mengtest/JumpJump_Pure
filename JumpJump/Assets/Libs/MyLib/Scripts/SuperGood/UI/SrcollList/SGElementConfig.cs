@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace UI.UIComponent.ScrollList
 {
-		public class SkyElementConfig : MonoBehaviour
+		public class SGElementConfig : MonoBehaviour
 		{
 
 				public virtual int GetCount ()

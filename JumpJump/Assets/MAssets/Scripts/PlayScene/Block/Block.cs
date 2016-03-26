@@ -6,6 +6,17 @@ using UnityEngine;
 public class Block : Object3d , IPoolable
 {
 
+	int m_DiffLv=0;
+
+	public int M_DiffLv {
+		get {
+			return m_DiffLv;
+		}
+		set {
+			m_DiffLv = value;
+		}
+	}
+
 	protected BlockType m_Type;
 
 	public int M_BrickNum {
@@ -114,6 +125,7 @@ public class Block : Object3d , IPoolable
 
 	bool CheckMoveIn ()
 	{
+	
 		if (HasMoveInCondition () && m_Bricks.Count > 0) {
 			if (!m_MoveIn && MoveIn_Condition (this)) {
 				StartMoveIn ();

@@ -1,27 +1,20 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class RunState : StateMachineBehaviour
-{
+public class JumpUp2State : StateMachineBehaviour {
 
-	// OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
-	override public void OnStateEnter (Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-	{
-		Debug.Log (" ****  RunState enter ****");
+	 // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
+	override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
+		Debug.Log (" ****  JumpUp2State enter ****");
 	}
 
 	// OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
-//	override public void OnStateUpdate (Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-//	{
+	override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
 //		PlayerController m_PC = PlayGameInstance.INSTANCE.PSC.PC;
-//		if (m_PC.UnGround) {
-//			animator.SetInteger ("state", (int)PlayerAnimator.AnimatorState.JUMP_UP);
-//			return;
+//		if (m_PC.MoveSpeed_Y < 0) {
+//			animator.SetInteger ("state", (int)PlayerAnimator.AnimatorState.JUMP_DOWN);
 //		}
-//		if (m_PC.MoveSpeed_X < 0.01f) {
-//			animator.SetInteger ("state", (int)PlayerAnimator.AnimatorState.IDLE);
-//		}
-//	}
+	}
 
 	// OnStateExit is called when a transition ends and the state machine finishes evaluating this state
 	//override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {

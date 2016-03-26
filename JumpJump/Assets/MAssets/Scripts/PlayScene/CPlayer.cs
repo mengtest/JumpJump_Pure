@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using MStateMachine;
 
@@ -22,6 +22,7 @@ public class CPlayer
 	public static Idle_State		 g_Idle_State = new Idle_State ();
 	public static Run_State		     g_Run_state = new Run_State ();
 	public static Jump_Up_State 		 g_Jump_Up_State = new Jump_Up_State ();
+	public static Jump_Up2_State 		g_Jump_Up2_State = new Jump_Up2_State ();
 	public static Jump_Down_State 		 g_Jump_Down_State = new Jump_Down_State ();
 	public static Jump_OnGround_State		 g_Jump_OnGround_State = new Jump_OnGround_State ();
 
@@ -50,11 +51,13 @@ public class CPlayer
 	{
 		this.m_PC = pC;
 		baseStateMachine = new StateMachine<CPlayer> ();
-		Init();
+		Init ();
 	}
 
-	public void Init(){
+	public void Init ()
+	{
 		baseStateMachine.Init (this, g_Idle_State, null, null);
+		baseStateMachine.ChangeState(g_Idle_State);
 	}
 
 	public void Update ()
@@ -69,7 +72,8 @@ public class CPlayer
 	
 	public  void Idle_Execute ()
 	{
-		if (!m_PC.M_OnGround) {
+//		if (!m_PC.M_OnGround) {
+		if (m_PC.UnGround) {
 			ChangeBaseState (g_Jump_Up_State);
 			return;
 		}
@@ -81,8 +85,9 @@ public class CPlayer
 	public  void Idle_Enter ()
 	{
 	
-		m_PC.playerAnimator.PlayAnimation (PlayerAnimator.AnimatorState.Idle);
-		Debug.Log(" idle enter");
+		if(m_PC.playerAnimator!=null)
+		m_PC.playerAnimator.PlayAnimation (PlayerAnimator.AnimatorState.IDLE);
+		Debug.Log (" idle enter");
 	}
 
 	public  void Idle_Exit ()
@@ -95,19 +100,20 @@ public class CPlayer
 
 	public  void Run_Execute ()
 	{
-		if (!m_PC.M_OnGround) {
+//		if (!m_PC.M_OnGround) {
+		if (m_PC.UnGround) {
 			ChangeBaseState (g_Jump_Up_State);
 			return;
 		}
-		if (m_PC.MoveSpeed_X < 0.1f) {
+		if (m_PC.MoveSpeed_X < 0.01f) {
 			ChangeBaseState (g_Idle_State);
 		}
 	}
 	
 	public  void Run_Enter ()
 	{
-		m_PC.playerAnimator.PlayAnimation (PlayerAnimator.AnimatorState.Run);
-		Debug.Log(" run enter");
+		m_PC.playerAnimator.PlayAnimation (PlayerAnimator.AnimatorState.RUN);
+		Debug.Log (" run enter");
 	}
 	
 	public  void Run_Exit ()
@@ -120,16 +126,16 @@ public class CPlayer
 
 	public  void Jump_Up_Execute ()
 	{
-		if(m_PC.MoveSpeed_Y<0){
-			ChangeBaseState(g_Jump_Down_State);
+		if (m_PC.MoveSpeed_Y < 0) {
+			ChangeBaseState (g_Jump_Down_State);
 		}
 //		Debug.Log(" y="+m_PC.MoveSpeed_Y);
 	}
 	
 	public  void Jump_Up_Enter ()
 	{
-		m_PC.playerAnimator.PlayAnimation (PlayerAnimator.AnimatorState.Jump_up);
-		Debug.Log(" jump up enter");
+		m_PC.playerAnimator.PlayAnimation (PlayerAnimator.AnimatorState.JUMP_UP);
+		Debug.Log (" jump up enter");
 	}
 	
 	public  void Jump_Up_Exit ()
@@ -140,19 +146,49 @@ public class CPlayer
 	#endregion
 
 
+	#region jump_Up2
+
+	public void OnJump_Up2 ()
+	{
+		ChangeBaseState (g_Jump_Up2_State);
+	}
+
+	public  void Jump_Up2_Execute ()
+	{
+		if (m_PC.MoveSpeed_Y < 0) {
+			ChangeBaseState (g_Jump_Down_State);
+		}
+	}
+	
+	public  void Jump_Up2_Enter ()
+	{
+		m_PC.playerAnimator.PlayAnimation (PlayerAnimator.AnimatorState.JUMP_UP2);
+		Debug.Log (" jump up2 enter");
+	}
+	
+	public  void Jump_Up2_Exit ()
+	{
+		
+	}
+	
+	#endregion
+
+
+
+
 	#region jump_Down
 	
 	public  void Jump_Down_Execute ()
 	{
-		if(m_PC.M_OnGround){
-			ChangeBaseState(g_Jump_OnGround_State);
+		if (m_PC.M_OnGround) {
+			ChangeBaseState (g_Jump_OnGround_State);
 		}
 	}
 	
 	public  void Jump_Down_Enter ()
 	{
-		m_PC.playerAnimator.PlayAnimation (PlayerAnimator.AnimatorState.Jump_down);
-		Debug.Log(" jump down enter");
+		m_PC.playerAnimator.PlayAnimation (PlayerAnimator.AnimatorState.JUMP_DOWN);
+		Debug.Log (" jump down enter");
 	}
 	
 	public  void Jump_Down_Exit ()
@@ -166,13 +202,13 @@ public class CPlayer
 	
 	public  void Jump_OnGround_Execute ()
 	{
-		ChangeBaseState(g_Idle_State);
+		ChangeBaseState (g_Idle_State);
 	}
 	
 	public  void Jump_OnGround_Enter ()
 	{
-		m_PC.playerAnimator.PlayAnimation (PlayerAnimator.AnimatorState.Jump_onGround);
-		Debug.Log(" jump on ground enter");
+		m_PC.playerAnimator.PlayAnimation (PlayerAnimator.AnimatorState.JUMP_ONGROUND);
+		Debug.Log (" jump on ground enter");
 	}
 	
 	public  void Jump_OnGround_Exit ()

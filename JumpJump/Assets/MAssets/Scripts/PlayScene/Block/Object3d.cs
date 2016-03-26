@@ -580,7 +580,7 @@ public class Object3d :MonoBehaviour
 
 	public bool HasMoveInCondition ()
 	{
-		return m_MoveIn_CT != MoveIn_ConditionType.EMPTY;
+		return m_MoveIn_CT != MoveIn_ConditionType.EMPTY && MoveIn_Condition!=null;
 	}
 
 	float m_MoveIn_DelayTime = 0f;
@@ -727,7 +727,7 @@ public class Object3d :MonoBehaviour
 	
 	public bool HasMoveOutCondition ()
 	{
-		return m_MoveOut_CT != MoveOut_ConditionType.EMPTY;
+		return m_MoveOut_CT != MoveOut_ConditionType.EMPTY && MoveOut_Condition!=null;
 	}
 	
 	[SerializeField]

@@ -21,12 +21,15 @@ public class PlayerController : MonoBehaviour
 	Vector3 m_InitPot;
 	Vector3 m_InitRotate;
 	int m_JumpTimes = 0;
-	int m_MaxJumpTimes = 1;
+	int m_MaxJumpTimes = 2;//1;
 	Vector3 m_OldVelocity;
 	public Vector3 m_Gravity = new Vector3 (0, -9.8f, 0);
 	public GameObject magnetEffect;
+	public GameObject unbeatableEffect;
 	public PlayerAnimator playerAnimator;
 	CPlayer player;
+
+	public TextMesh stateMesh;
 
 	float GetMoveSpeed ()
 	{
@@ -37,8 +40,8 @@ public class PlayerController : MonoBehaviour
 		get { return m_Rigidbody.velocity.x;}
 	}
 
-	public float MoveSpeed_Y{
-		get {return m_Rigidbody.velocity.y;}
+	public float MoveSpeed_Y {
+		get { return m_Rigidbody.velocity.y;}
 	}
 
 	
@@ -80,6 +83,7 @@ public class PlayerController : MonoBehaviour
 		transform.position = m_InitPot;
 		transform.rotation = Quaternion.Euler (m_InitRotate);
 		m_OnGround = false;
+		unGround = false;
 		SetEmptyFunction ();
 		m_JumpTimes = 0;
 		m_JumpValidateTime = 0;
@@ -93,7 +97,8 @@ public class PlayerController : MonoBehaviour
 		m_AttachMagnetTimer.Pause ();
 		PlayGameInstance.INSTANCE.PSC.PC.m_MagnetRange = m_InitMagnetRange;
 		magnetEffect.SetActive (false);
-		player.Init();
+		unbeatableEffect.SetActive(false);
+		player.Init ();
 	}
 
 	#endregion
@@ -119,6 +124,9 @@ public class PlayerController : MonoBehaviour
 		FixedZ ();
 		if (player != null)
 			player.Update ();
+
+		stateMesh.text=player.CurState.ToString();
+		Debug.Log(" m_ground="+m_OnGround +" unground="+unGround);
 
 	}
 
@@ -199,7 +207,7 @@ public class PlayerController : MonoBehaviour
 
 	#region event
 	float m_JumpValidateTime = 0;
-	public float m_Max_JumpValidateTime = 0.05f;
+	public float m_Max_JumpValidateTime = 0.15f;//0.05f
 	
 	public void OnTouchDownScreen ()
 	{
@@ -212,6 +220,9 @@ public class PlayerController : MonoBehaviour
 			v.y = moveSpeed.y;
 			m_Rigidbody.velocity = v;
 			m_JumpTimes++;
+			Debug.Log (" jump times=" + m_JumpTimes);
+			if (m_JumpTimes == 2)
+				player.OnJump_Up2 (); 
 		}
 	}
 
@@ -269,17 +280,24 @@ public class PlayerController : MonoBehaviour
 
 	#region check
 	Ray ray;
-	
+	bool unGround = false;
+
+	public bool UnGround {
+		get {
+			return unGround;
+		}
+	}
+
 	void CheckGrounded ()
 	{
 		Vector3 origin = m_sphereCollider.bounds.center;
 		ray.origin = origin;
 		ray.direction = Vector3.down;
-		float dst = m_sphereCollider.radius + 0.1f;
+		float dst = m_sphereCollider.radius + 0.2f;
 		
-		if (m_Rigidbody.velocity.y > 0)
-			return;
-		
+//		if (m_Rigidbody.velocity.y > 0)
+//			return;
+//		
 		int lay = 1 << LayerMask.NameToLayer ("Player");
 		
 		RaycastHit hit;
@@ -293,12 +311,36 @@ public class PlayerController : MonoBehaviour
 		origin.x = m_sphereCollider.bounds.center.x - m_sphereCollider.radius;
 		ray.origin = origin;
 		bool check3 = Physics.Raycast (ray, out hit, dst, ~lay);
-		if (check1 || check2 || check3) {
+		unGround=!(check1 || check2 || check3);
+
+		if (m_Rigidbody.velocity.y > 0)
+			return;
+		if(!unGround){
 			m_JumpTimes = 0;
 			m_JumpValidateTime = 0;
-			//			Debug.Log (" hit pot=" + hit.point + " hit name=" + hit.collider.name + " m_Rigidbody.velocity.y=" + m_Rigidbody.velocity.y);
 		}
-		
+//		if (check1 || check2 || check3) {
+//			m_JumpTimes = 0;
+//			m_JumpValidateTime = 0;
+//			unGround=false;
+//			//			Debug.Log (" hit pot=" + hit.point + " hit name=" + hit.collider.name + " m_Rigidbody.velocity.y=" + m_Rigidbody.velocity.y);
+//		}else{
+//			unGround=true;
+//		}
+
+
+//		int lay = 1 << LayerMask.NameToLayer ("Player");
+//		Vector3 center = m_sphereCollider.bounds.center;
+//		float r = m_sphereCollider.radius + 0.3f;
+//		Collider [] colliders = Physics.OverlapSphere (center, r, ~lay);
+//		bool valide = colliders.Length > 0;
+//		if (valide) {
+//			m_JumpTimes = 0;
+//			m_JumpValidateTime = 0;
+//			unGround = false;
+//		} else {
+//			unGround = true;
+//		}
 	}
 	
 	void CheckFailed (Collision collision)
@@ -413,7 +455,7 @@ public class PlayerController : MonoBehaviour
 	void SetEmptyFunction ()
 	{
 		moveSpeed.y = m_InitMoveSpeed.y;
-		m_MaxJumpTimes = 1;
+//		m_MaxJumpTimes = 1;
 	}
 	#endregion
 
@@ -431,6 +473,8 @@ public class PlayerController : MonoBehaviour
 		m_IsUnbeatable = true;
 		m_Rigidbody.useGravity = false;
 		OpenKinematicAndTrigger ();
+		unbeatableEffect.SetActive(true);
+
 	}
 
 	void OnUnbeatable_Over ()
@@ -440,6 +484,7 @@ public class PlayerController : MonoBehaviour
 		m_Rigidbody.useGravity = true;
 		m_Rigidbody.velocity = Vector3.up * m_InitMoveSpeed.y;
 		CloseKinematicAndTrigger ();
+		unbeatableEffect.SetActive(false);
 
 		GameData.Instance ().M_RunningData.M_RoleState = "Normal";
 		m_Renderer.material = m_InitMtl;

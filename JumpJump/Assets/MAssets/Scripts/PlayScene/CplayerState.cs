@@ -87,6 +87,33 @@ public class Jump_Up_State :State<CPlayer>
 
 #endregion
 
+#region Jump_Up2
+public class Jump_Up2_State :State<CPlayer>
+{
+	public override void Execute (CPlayer player)
+	{
+		player.Jump_Up2_Execute ();
+	}
+	
+	public override void Enter (CPlayer player)
+	{
+		player.Jump_Up2_Enter ();
+	}
+	
+	public override void Exit (CPlayer player)
+	{
+		player.Jump_Up2_Exit ();
+	}
+	
+	public override string ToString ()
+	{
+		return string.Format ("[Jump_Up2_State]");
+	}
+}
+
+#endregion
+
+
 
 #region Jump_Down
 public class Jump_Down_State :State<CPlayer>

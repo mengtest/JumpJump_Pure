@@ -22,7 +22,7 @@ public class PlayerAnimator : MonoBehaviour
 //			animatorClipInofo.clip.AddEvent(animationEvent);
 ////			}
 //		}
-		lastState = AnimatorState.Idle;
+		lastState = AnimatorState.IDLE;
 
 //		PlayAnimation (AnimatorState.Run);
 	}
@@ -39,25 +39,63 @@ public class PlayerAnimator : MonoBehaviour
 //		animator.SetBool (SAME_STATE, true);
 //	}
 
+//	public void PlayAnimation (AnimatorState animatorState)
+//	{
+//
+//		if (lastState != animatorState) {
+//			animator.SetFloat (PLAYER_STATE, (int)animatorState);
+//			animator.SetBool (SAME_STATE, false);
+//			lastState = animatorState;
+//			StartCoroutine (SetSameTrue ());
+//		}
+//	}
+
 	public void PlayAnimation (AnimatorState animatorState)
 	{
-
-		if (lastState != animatorState) {
-			animator.SetFloat (PLAYER_STATE, (int)animatorState);
-			animator.SetBool (SAME_STATE, false);
-			lastState = animatorState;
-			StartCoroutine (SetSameTrue ());
-		}
+	
+//			if (lastState != animatorState) {
+		if (animator == null)
+			return;
+		animator.SetInteger ("state", (int)animatorState);
+		lastState = animatorState;
+//				StartCoroutine (SetSameTrue ());
+		animator.CrossFade (GetAnimatorHashId(animatorState), 0.2f);
+//			}
 	}
+//
+	public int GetAnimatorHashId (AnimatorState state)
+	{
+
+		switch (state) {
+		case AnimatorState.IDLE:
+			return Animator.StringToHash ("Base Layer.Idle");
+		case AnimatorState.RUN:
+			return Animator.StringToHash ("Base Layer.RuN");
+		case AnimatorState.JUMP_UP:
+			return Animator.StringToHash ("Base Layer.Jump_Up");
+		case AnimatorState.JUMP_UP2:
+			return Animator.StringToHash ("Base Layer.Jump_Up2");
+		case AnimatorState.JUMP_DOWN:
+			return Animator.StringToHash ("Base Layer.Jump_Down");
+		case AnimatorState.JUMP_ONGROUND:
+			return Animator.StringToHash ("Base Layer.Jump_OnGround");
+
+			
+		}
+		return -1;
+
+	}
+
 
 
 	public enum AnimatorState
 	{
-		Idle=0,
-		Run=1,
-		Jump_up=2,
-		Jump_down=3,
-		Jump_onGround=4
+		IDLE=0,
+		RUN=1,
+		JUMP_UP=2,
+		JUMP_UP2=3,
+		JUMP_DOWN=4,
+		JUMP_ONGROUND=5
 	}
 
 	IEnumerator SetSameTrue ()

@@ -1,17 +1,24 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class JumpOnGroundState : StateMachineBehaviour {
+public class JumpOnGroundState : StateMachineBehaviour
+{
 
-	 // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
-	//override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-	//
-	//}
+	// OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
+	override public void OnStateEnter (Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+	{
+		Debug.Log (" ****  JumpOnGroundState enter ****");
+	}
 
 	// OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
-	//override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-	//
-	//}
+	override public void OnStateUpdate (Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+	{
+	
+//		PlayerController m_PC = PlayGameInstance.INSTANCE.PSC.PC;
+//		animator.SetInteger ("state", (int)PlayerAnimator.AnimatorState.IDLE);
+
+
+	}
 
 	// OnStateExit is called when a transition ends and the state machine finishes evaluating this state
 	//override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {

@@ -1,6 +1,7 @@
 ﻿using LitJson;
 using UnityEngine;
 using System;
+using Supergood.Unity;
 
 public class GameData
 {
@@ -47,8 +48,8 @@ public class GameData
 
 	private void LoadData ()
 	{
-		m_PerpetualData = RWData.Load<PerpetualData> (PerpetualData.PREFSKEY);
-		m_SettingData  = RWData.Load<SettingData> (SettingData.PREFSKEY);
+		m_PerpetualData = SharedPrefs.LoadDecrypt<PerpetualData> (PerpetualData.PREFSKEY);
+		m_SettingData  = SharedPrefs.LoadDecrypt<SettingData> (SettingData.PREFSKEY);
 		m_RunningData = new RunningData ();
 	}
 
@@ -62,12 +63,12 @@ public class GameData
 	
 	public void SaveSettingData ()
 	{
-		RWData.Save<SettingData> (SettingData.PREFSKEY, M_SettingData);
+		SharedPrefs.SaveEncrypt<SettingData> (SettingData.PREFSKEY, M_SettingData);
 	}
 	
 	public void SavePerpetualData ()
 	{
-		RWData.Save<PerpetualData> (PerpetualData.PREFSKEY, M_PerpetualData);
+		SharedPrefs.SaveEncrypt<PerpetualData> (PerpetualData.PREFSKEY, M_PerpetualData);
 	}
 
 	public void SaveFlush(){

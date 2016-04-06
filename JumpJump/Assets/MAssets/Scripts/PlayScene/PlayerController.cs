@@ -26,6 +26,11 @@ public class PlayerController : MonoBehaviour
 	public Vector3 m_Gravity = new Vector3 (0, -9.8f, 0);
 	public GameObject magnetEffect;
 	public GameObject unbeatableEffect;
+	public GameObject runEffect;
+	public GameObject dieEffect;
+	public GameObject runDownEffect;
+	public GameObject blockBreakEffect;
+
 	public PlayerAnimator playerAnimator;
 	CPlayer player;
 
@@ -72,6 +77,9 @@ public class PlayerController : MonoBehaviour
 		InitMagnetTimer ();
 		m_MagnetRange = m_InitMagnetRange;
 
+		m_FailPerpare_Timer=new MTimer(1f);
+		m_FailPerpare_Timer.OnTime+=OnPerpareFailOver;
+
 		player = new CPlayer (this);
 
 	}
@@ -98,7 +106,10 @@ public class PlayerController : MonoBehaviour
 		PlayGameInstance.INSTANCE.PSC.PC.m_MagnetRange = m_InitMagnetRange;
 		magnetEffect.SetActive (false);
 		unbeatableEffect.SetActive(false);
+		runEffect.SetActive(false);
+		dieEffect.SetActive(false);
 		player.Init ();
+		m_FailPerpare_Timer.Pause();
 	}
 
 	#endregion
@@ -120,13 +131,14 @@ public class PlayerController : MonoBehaviour
 		m_Unbeatable_Timer.Update ();
 		m_Skill_Timer.Update ();
 		m_AttachMagnetTimer.Update ();
+		m_FailPerpare_Timer.Update();
 
 		FixedZ ();
 		if (player != null)
 			player.Update ();
 
-		stateMesh.text=player.CurState.ToString();
-		Debug.Log(" m_ground="+m_OnGround +" unground="+unGround);
+//		stateMesh.text=player.CurState.ToString();
+//		Debug.Log(" m_ground="+m_OnGround +" unground="+unGround);
 
 	}
 
@@ -330,17 +342,17 @@ public class PlayerController : MonoBehaviour
 
 
 //		int lay = 1 << LayerMask.NameToLayer ("Player");
-//		Vector3 center = m_sphereCollider.bounds.center;
-//		float r = m_sphereCollider.radius + 0.3f;
-//		Collider [] colliders = Physics.OverlapSphere (center, r, ~lay);
-//		bool valide = colliders.Length > 0;
-//		if (valide) {
-//			m_JumpTimes = 0;
-//			m_JumpValidateTime = 0;
-//			unGround = false;
-//		} else {
-//			unGround = true;
-//		}
+		Vector3 center = m_sphereCollider.bounds.center;
+		float r = m_sphereCollider.radius + 0.3f;
+		Collider [] colliders = Physics.OverlapSphere (center, r, ~lay);
+		bool valide = colliders.Length > 0;
+		if (valide) {
+			m_JumpTimes = 0;
+			m_JumpValidateTime = 0;
+			unGround = false;
+		} else {
+			unGround = true;
+		}
 	}
 	
 	void CheckFailed (Collision collision)
@@ -364,24 +376,53 @@ public class PlayerController : MonoBehaviour
 				if (brick.M_OnUnbeatableCollided) {
 					return;
 				}
-				OnFaild ();
+//				OnFail ();
+				PerpareFail();
 				break;
 			}
 		}
 	}
 	
-	void OnFaild ()
-	{
-		PlayGameInstance.INSTANCE.OnGameResult ();
-	}
+
 	
 	void CheckFailed ()
 	{
 		float minY = m_IsUnbeatable ? -1f : - 0.5f;
 		if (transform.position.y < minY) {
-			OnFaild ();
+			OnFail ();
 		}
 	}
+	#endregion
+
+
+	#region fail
+
+	MTimer m_FailPerpare_Timer;
+	float  m_FailPerpare_Duration=0.5f;
+	bool m_FailPerpare=false;
+
+	void OnFail ()
+	{
+
+		PlayGameInstance.INSTANCE.OnGameResult ();
+	}
+
+	void PerpareFail(){
+		dieEffect.SetActive(true);
+		m_Rigidbody.isKinematic = true;
+		m_FailPerpare_Timer.Restart(false,m_FailPerpare_Duration);
+		m_FailPerpare=true;
+//		playerAnimator.StopAnimation();
+
+	}
+
+	void OnPerpareFailOver(){
+		m_Rigidbody.isKinematic = false;
+		m_FailPerpare_Timer.Pause();
+		m_FailPerpare=false;
+		OnFail();
+	}
+
 	#endregion
 
 
@@ -510,6 +551,7 @@ public class PlayerController : MonoBehaviour
 			Block parent = (Block)brick.M_Parent;
 			Brick b;
 			Rigidbody rg;
+
 			for (int i=0; i<parent.M_Bricks.Count; i++) {
 				b = parent.M_Bricks [i];
 				rg = b.GetComponent<Rigidbody> ();
@@ -529,6 +571,7 @@ public class PlayerController : MonoBehaviour
 			m_JumpTimes = 0;
 			m_JumpValidateTime = 0;
 			brick.OnUnbeatableCollided ();
+			OpenBlockBreakEffect(brick.transform.position);
 		}
 	}
 
@@ -592,6 +635,30 @@ public class PlayerController : MonoBehaviour
 	}
 
 
+	#endregion
+
+	#region effect
+
+	public void OpenRunEffect(){
+		runEffect.SetActive(true);
+	}
+
+	public void CloseRunEffect(){
+		runEffect.SetActive(false);
+	}
+
+	public void OpenRunDownEffect(){
+		runDownEffect.SetActive(true);
+	}
+
+	public void CloseRunDownEffect(){
+		runDownEffect.SetActive(false);
+	}
+
+	public void OpenBlockBreakEffect(Vector3 pot){
+		blockBreakEffect.GetComponent<EffectController>().PlayEffect();
+		blockBreakEffect.transform.position=pot;
+	}
 	#endregion
 	
 

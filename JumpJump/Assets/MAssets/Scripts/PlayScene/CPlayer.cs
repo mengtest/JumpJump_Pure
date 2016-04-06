@@ -58,6 +58,7 @@ public class CPlayer
 	{
 		baseStateMachine.Init (this, g_Idle_State, null, null);
 		baseStateMachine.ChangeState(g_Idle_State);
+		if(m_PC.playerAnimator!=null) m_PC.playerAnimator.PlayAnimtion();
 	}
 
 	public void Update ()
@@ -87,6 +88,7 @@ public class CPlayer
 	
 		if(m_PC.playerAnimator!=null)
 		m_PC.playerAnimator.PlayAnimation (PlayerAnimator.AnimatorState.IDLE);
+
 		Debug.Log (" idle enter");
 	}
 
@@ -113,11 +115,13 @@ public class CPlayer
 	public  void Run_Enter ()
 	{
 		m_PC.playerAnimator.PlayAnimation (PlayerAnimator.AnimatorState.RUN);
+		m_PC.OpenRunEffect();
 		Debug.Log (" run enter");
 	}
 	
 	public  void Run_Exit ()
 	{
+		m_PC.CloseRunEffect();
 		
 	}
 	#endregion
@@ -208,6 +212,7 @@ public class CPlayer
 	public  void Jump_OnGround_Enter ()
 	{
 		m_PC.playerAnimator.PlayAnimation (PlayerAnimator.AnimatorState.JUMP_ONGROUND);
+		m_PC.OpenRunDownEffect();
 		Debug.Log (" jump on ground enter");
 	}
 	

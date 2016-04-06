@@ -60,8 +60,18 @@ public class PlayerAnimator : MonoBehaviour
 		lastState = animatorState;
 //				StartCoroutine (SetSameTrue ());
 		animator.CrossFade (GetAnimatorHashId(animatorState), 0.2f);
+		Debug.Log(" play animtion ="+GetAnimatorHashId(animatorState));
 //			}
 	}
+
+	public void StopAnimation(){
+		animator.Stop();
+	}
+
+	public void PlayAnimtion(){
+//		animator.StartPlayback();
+	}
+	
 //
 	public int GetAnimatorHashId (AnimatorState state)
 	{

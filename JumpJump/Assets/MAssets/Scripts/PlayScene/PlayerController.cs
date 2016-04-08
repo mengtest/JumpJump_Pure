@@ -648,7 +648,8 @@ public class PlayerController : MonoBehaviour
 	}
 
 	public void OpenRunDownEffect(){
-		runDownEffect.SetActive(true);
+//		runDownEffect.SetActive(true);
+		runDownEffect.GetComponent<EffectController>().PlayEffect();
 	}
 
 	public void CloseRunDownEffect(){

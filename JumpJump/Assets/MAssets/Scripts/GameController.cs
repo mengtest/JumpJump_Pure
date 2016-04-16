@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using Supergood.Unity;
+using Supergood.Unity.Ad;
 
 public class GameController : MonoBehaviour {
 
@@ -66,6 +67,7 @@ public class GameController : MonoBehaviour {
 		playPanel.Pause ();
 		gameOverPanel.ShowIn ();
 		gameOverPanel.SetFinalScoreText (GameData.Instance().M_RunningData.M_Score + "");
+		AdManager.instant.ShowFull ();
 	}
 
 	public MainPanel GetMainPanel(){

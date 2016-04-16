@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using Supergood.Unity;
 
 public class GameController : MonoBehaviour {
 
@@ -18,6 +19,7 @@ public class GameController : MonoBehaviour {
 		DebuggerUtil.DEBUG_LEVEL = DebuggerUtil.DebugLevel.ALL;
 		DebuggerUtil.Log (" targetFrameRate : " + Application.targetFrameRate);
 		Application.targetFrameRate = targetFrameRate;
+		SGCross.Init ();
 	}
 
 	void Init(){

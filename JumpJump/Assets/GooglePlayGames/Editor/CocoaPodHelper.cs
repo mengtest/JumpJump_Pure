@@ -22,7 +22,7 @@ namespace GooglePlayGames
 
     public class CocoaPodHelper
     {
-        private const string podPath = "/usr/bin/pod";
+		private const string podPath = "/usr/local/bin/pod";
 
 
         public static bool Update(string projDir)

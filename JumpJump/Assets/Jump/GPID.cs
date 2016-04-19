@@ -25,8 +25,8 @@ namespace Jump
 {
 public static class GPID
 {
-        public const string package_name = "com.superjump.fastgood"; // <GPGSID>
         public const string leaderboard_ = "CgkIsdi9-McREAIQAQ"; // <GPGSID>
+        public const string BUNDLE_ID = "com.superjump.fastgood"; // <GPGSID>
 
 }
 }

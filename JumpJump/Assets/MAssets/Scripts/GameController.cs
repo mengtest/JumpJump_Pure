@@ -20,6 +20,7 @@ public class GameController : MonoBehaviour {
 		DebuggerUtil.DEBUG_LEVEL = DebuggerUtil.DebugLevel.ALL;
 		DebuggerUtil.Log (" targetFrameRate : " + Application.targetFrameRate);
 		Application.targetFrameRate = targetFrameRate;
+		AdManager.BannerVeiwPositoin = SGAdPosition.BottomLeft;
 		SGCross.Init ();
 	}
 

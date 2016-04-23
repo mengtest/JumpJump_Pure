@@ -119,7 +119,7 @@ namespace GooglePlayServices
             }
 
             Resolver.DoResolution(svcSupport,
-                "Assets/Plugins/Android",
+			                      "Assets/SGLib/Plugins/Android",
                 HandleOverwriteConfirmation);
 
             AssetDatabase.Refresh();
@@ -129,7 +129,7 @@ namespace GooglePlayServices
         /// <summary>
         /// Add a menu item for resolving the jars manually.
         /// </summary>
-        [MenuItem("Assets/Google Play Services/Settings")]
+		[MenuItem("Assets/SGLib/Google Play Services/Settings")]
         public static void SettingsDialog()
         {
             Resolver.ShowSettingsDialog();
@@ -138,10 +138,10 @@ namespace GooglePlayServices
         /// <summary>
         /// Add a menu item for resolving the jars manually.
         /// </summary>
-        [MenuItem("Assets/Google Play Services/Resolve Client Jars")]
+		[MenuItem("Assets/SGLib/Google Play Services/Resolve Client Jars")]
         public static void MenuResolve()
         {
-            Resolver.DoResolution(svcSupport, "Assets/Plugins/Android", HandleOverwriteConfirmation);
+			Resolver.DoResolution(svcSupport, "Assets/SGLib/Plugins/Android", HandleOverwriteConfirmation);
 
             AssetDatabase.Refresh();
             EditorUtility.DisplayDialog("Android Jar Dependencies",

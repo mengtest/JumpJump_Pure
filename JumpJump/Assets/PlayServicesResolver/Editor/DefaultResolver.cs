@@ -99,7 +99,7 @@ namespace GooglePlayServices
                 // look for deleted android plugins
                 foreach (string s in deletedAssets)
                 {
-                    if (s.StartsWith("Assets/Plugins/Android"))
+					if (s.StartsWith("Assets/SGLib/Plugins/Android"))
                     {
                         Debug.Log(s + " deleted, resolving play-services");
                         return true;

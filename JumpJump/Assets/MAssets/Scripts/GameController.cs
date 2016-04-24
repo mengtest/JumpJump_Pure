@@ -20,6 +20,7 @@ public class GameController : MonoBehaviour {
 		DebuggerUtil.DEBUG_LEVEL = DebuggerUtil.DebugLevel.ALL;
 		DebuggerUtil.Log (" targetFrameRate : " + Application.targetFrameRate);
 		Application.targetFrameRate = targetFrameRate;
+		AdManager.InitAdEvent (()=>{GameData.Instance().M_PerpetualData.AddCoins(50);});
 		AdManager.BannerVeiwPositoin = SGAdPosition.BottomLeft;
 		SGCross.Init ();
 	}

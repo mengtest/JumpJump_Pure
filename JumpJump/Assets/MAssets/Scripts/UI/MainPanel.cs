@@ -8,10 +8,13 @@ using Supergood.Unity.Ad;
 using UnityEngine.SocialPlatforms.GameCenter; 
 using UnityEngine.SocialPlatforms;
 
+using TMPro;
+
 public class MainPanel : UIWindow
 {
 
 	public Button VedioButton;
+	public TextMeshProUGUI CoinsNumber;
 
 	public void Play ()
 	{
@@ -23,9 +26,10 @@ public class MainPanel : UIWindow
 
 	void Update ()
 	{
-//		if (SGConfig.Instant.isLoad) {
-//			VedioButton.interactable = AdManager.instant.VideoIsLoad ();
-//		}
+		if (SGConfig.Instant.isLoad) {
+			VedioButton.interactable = AdManager.instant.VideoIsLoad ();
+		}
+		CoinsNumber.text = GameData.Instance ().M_PerpetualData.m_Coins.ToString ();
 	}
 
 	public void ShowVideo(){

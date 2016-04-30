@@ -11,7 +11,14 @@ public class PlayGameInstance :IPlayGame {
 	}
 	public delegate void OnGameResult_Delegate ();
 	public OnGameResult_Delegate  OnGameResultDelegate;
-	
+
+
+	public delegate void UI_Delegate();
+	public UI_Delegate OnMagnetEndTip;
+	public UI_Delegate OnMagnetEnd;
+	public UI_Delegate OnCurFuncEndTip;
+	public UI_Delegate OnCurFuncEnd;
+	public UI_Delegate OnGetCoin;
 	
 	public void OnGameResult ()
 	{
@@ -26,6 +33,11 @@ public class PlayGameInstance :IPlayGame {
 		this.pSC = pSC;
 		INSTANCE = this;
 		GameState.Init();
+	}
+
+	public void Init(){
+		GameState.Init();
+		GameData.Load();
 	}
 	
 	public void OnStart ()
@@ -71,6 +83,22 @@ public class PlayGameInstance :IPlayGame {
 	public void OnSkill_SlownDown ()
 	{
 		pSC.PC.OnSkill_SlownDown();
+	}
+
+	public void OnRoleSeleted(int id){
+		int lastId=GameData.Instance().M_SettingData.m_LastSelectedRoleId;
+		if(lastId!=id){
+			GameData.Instance().M_SettingData.m_LastSelectedRoleId=id;
+			pSC.OnRoleChange(id);
+		}
+	}
+
+	public void OnRoleRevive(){
+		pSC.OnRoleRevive();
+	}
+
+	public void AddCoin(int num){
+		GameData.Instance().M_SettingData.m_Coin+=num;
 	}
 
 }

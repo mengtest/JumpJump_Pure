@@ -30,10 +30,9 @@ public class PlayerController : MonoBehaviour
 	public GameObject dieEffect;
 	public GameObject runDownEffect;
 	public GameObject blockBreakEffect;
-
+	public GameObject roleNode;
 	public PlayerAnimator playerAnimator;
 	CPlayer player;
-
 	public TextMesh stateMesh;
 
 	float GetMoveSpeed ()
@@ -77,11 +76,11 @@ public class PlayerController : MonoBehaviour
 		InitMagnetTimer ();
 		m_MagnetRange = m_InitMagnetRange;
 
-		m_FailPerpare_Timer=new MTimer(1f);
-		m_FailPerpare_Timer.OnTime+=OnPerpareFailOver;
+		m_FailPerpare_Timer = new MTimer (1f);
+		m_FailPerpare_Timer.OnTime += OnPerpareFailOver;
 
 		player = new CPlayer (this);
-
+		InitRole();
 	}
 
 	float m_InitMagnetRange = 1.1f;
@@ -105,11 +104,12 @@ public class PlayerController : MonoBehaviour
 		m_AttachMagnetTimer.Pause ();
 		PlayGameInstance.INSTANCE.PSC.PC.m_MagnetRange = m_InitMagnetRange;
 		magnetEffect.SetActive (false);
-		unbeatableEffect.SetActive(false);
-		runEffect.SetActive(false);
-		dieEffect.SetActive(false);
+		unbeatableEffect.SetActive (false);
+		runEffect.SetActive (false);
+		dieEffect.SetActive (false);
 		player.Init ();
-		m_FailPerpare_Timer.Pause();
+		m_FailPerpare_Timer.Pause ();
+		InitRole();
 	}
 
 	#endregion
@@ -131,7 +131,7 @@ public class PlayerController : MonoBehaviour
 		m_Unbeatable_Timer.Update ();
 		m_Skill_Timer.Update ();
 		m_AttachMagnetTimer.Update ();
-		m_FailPerpare_Timer.Update();
+		m_FailPerpare_Timer.Update ();
 
 		FixedZ ();
 		if (player != null)
@@ -323,11 +323,11 @@ public class PlayerController : MonoBehaviour
 		origin.x = m_sphereCollider.bounds.center.x - m_sphereCollider.radius;
 		ray.origin = origin;
 		bool check3 = Physics.Raycast (ray, out hit, dst, ~lay);
-		unGround=!(check1 || check2 || check3);
+		unGround = !(check1 || check2 || check3);
 
 		if (m_Rigidbody.velocity.y > 0)
 			return;
-		if(!unGround){
+		if (!unGround) {
 			m_JumpTimes = 0;
 			m_JumpValidateTime = 0;
 		}
@@ -377,19 +377,18 @@ public class PlayerController : MonoBehaviour
 					return;
 				}
 //				OnFail ();
-				PerpareFail();
+				PerpareFail ();
 				break;
 			}
 		}
 	}
-	
-
 	
 	void CheckFailed ()
 	{
 		float minY = m_IsUnbeatable ? -1f : - 0.5f;
 		if (transform.position.y < minY) {
 			OnFail ();
+//			Camera.main.GetComponent<CameraFollow>().StartShockEffect();
 		}
 	}
 	#endregion
@@ -398,8 +397,8 @@ public class PlayerController : MonoBehaviour
 	#region fail
 
 	MTimer m_FailPerpare_Timer;
-	float  m_FailPerpare_Duration=0.5f;
-	bool m_FailPerpare=false;
+	float  m_FailPerpare_Duration = 0.5f;
+	bool m_FailPerpare = false;
 
 	void OnFail ()
 	{
@@ -407,20 +406,24 @@ public class PlayerController : MonoBehaviour
 		PlayGameInstance.INSTANCE.OnGameResult ();
 	}
 
-	void PerpareFail(){
-		dieEffect.SetActive(true);
+	void PerpareFail ()
+	{
+		dieEffect.SetActive (true);
 		m_Rigidbody.isKinematic = true;
-		m_FailPerpare_Timer.Restart(false,m_FailPerpare_Duration);
-		m_FailPerpare=true;
+		m_FailPerpare_Timer.Restart (false, m_FailPerpare_Duration);
+		m_FailPerpare = true;
 //		playerAnimator.StopAnimation();
-
+		roleNode.SetActive(false);
+		Camera.main.GetComponent<CameraFollow>().StartShockEffect();
 	}
 
-	void OnPerpareFailOver(){
+	void OnPerpareFailOver ()
+	{
 		m_Rigidbody.isKinematic = false;
-		m_FailPerpare_Timer.Pause();
-		m_FailPerpare=false;
-		OnFail();
+		m_FailPerpare_Timer.Pause ();
+		m_FailPerpare = false;
+		OnFail ();
+
 	}
 
 	#endregion
@@ -514,7 +517,7 @@ public class PlayerController : MonoBehaviour
 		m_IsUnbeatable = true;
 		m_Rigidbody.useGravity = false;
 		OpenKinematicAndTrigger ();
-		unbeatableEffect.SetActive(true);
+		unbeatableEffect.SetActive (true);
 
 	}
 
@@ -525,7 +528,7 @@ public class PlayerController : MonoBehaviour
 		m_Rigidbody.useGravity = true;
 		m_Rigidbody.velocity = Vector3.up * m_InitMoveSpeed.y;
 		CloseKinematicAndTrigger ();
-		unbeatableEffect.SetActive(false);
+		unbeatableEffect.SetActive (false);
 
 		GameData.Instance ().M_RunningData.M_RoleState = "Normal";
 		m_Renderer.material = m_InitMtl;
@@ -571,7 +574,7 @@ public class PlayerController : MonoBehaviour
 			m_JumpTimes = 0;
 			m_JumpValidateTime = 0;
 			brick.OnUnbeatableCollided ();
-			OpenBlockBreakEffect(brick.transform.position);
+			OpenBlockBreakEffect (brick.transform.position);
 		}
 	}
 
@@ -639,28 +642,80 @@ public class PlayerController : MonoBehaviour
 
 	#region effect
 
-	public void OpenRunEffect(){
-		runEffect.SetActive(true);
+	public void OpenRunEffect ()
+	{
+		runEffect.SetActive (true);
 	}
 
-	public void CloseRunEffect(){
-		runEffect.SetActive(false);
+	public void CloseRunEffect ()
+	{
+		runEffect.SetActive (false);
 	}
 
-	public void OpenRunDownEffect(){
+	public void OpenRunDownEffect ()
+	{
 //		runDownEffect.SetActive(true);
-		runDownEffect.GetComponent<EffectController>().PlayEffect();
+		runDownEffect.GetComponent<EffectController> ().PlayEffect ();
 	}
 
-	public void CloseRunDownEffect(){
-		runDownEffect.SetActive(false);
+	public void CloseRunDownEffect ()
+	{
+		runDownEffect.SetActive (false);
 	}
 
-	public void OpenBlockBreakEffect(Vector3 pot){
-		blockBreakEffect.GetComponent<EffectController>().PlayEffect();
-		blockBreakEffect.transform.position=pot;
+	public void OpenBlockBreakEffect (Vector3 pot)
+	{
+		blockBreakEffect.GetComponent<EffectController> ().PlayEffect ();
+		blockBreakEffect.transform.position = pot;
 	}
 	#endregion
 	
 
+	#region change role
+
+	public Texture menTexture;
+	public Texture womenTexture;
+	public Transform menNode;
+	public Transform womenNode;
+	public Renderer targetRender;
+
+	public void RoleChange (int id)
+	{
+		switch (id) {
+		case RoleTypeId.MEN:
+			break;
+		case RoleTypeId.WOMEN:
+			break;
+		}
+	}
+
+	public void InitRole(){
+		roleNode.SetActive(true);
+		int id=GameData.Instance().M_SettingData.m_LastSelectedRoleId;
+		id=1;
+		switch (id) {
+		case RoleTypeId.MEN:
+			ShowMen();
+			break;
+		case RoleTypeId.WOMEN:
+			ShowWomen();
+			break;
+		}
+	}
+
+	void ShowMen(){
+		targetRender.material.SetTexture ("_MainTex", menTexture);
+		menNode.gameObject.SetActive(true);
+		womenNode.gameObject.SetActive(false);
+	}
+
+	void ShowWomen(){
+		targetRender.material.SetTexture ("_MainTex", womenTexture);
+		menNode.gameObject.SetActive(false);
+		womenNode.gameObject.SetActive(true);
+	}
+
+
+
+	#endregion
 }

@@ -11,26 +11,18 @@ public class PlaySceneController : MonoBehaviour
 	public PlayerController PC {
 		get { return pC;}
 	}
-
+	
 	public Block block_Root;
+	public Block block_Root_Eidtor;
 	public float moveDelayTime_Unit = 0.1f;
 	public float moveDurationTime_Unit = 0.2f;
 	public float ConditionTime_Unit = 0.1f;
+	public bool isEditMode = false;
 	LvMgr lvMgr;
 
-//	GameObject m_Block_Head_1_Prefab;
-//	GameObject m_Block_1_Prefab;
-//	GameObject m_Block_2_Prefab;
 
 
 
-	void LoadPrefab ()
-	{
-//		m_Block_Head_1_Prefab = Resources.Load ("Blocks/Blocks_Head_1") as GameObject;
-//		m_Block_1_Prefab = Resources.Load ("Blocks/Blocks_1") as GameObject;
-//		m_Block_2_Prefab = Resources.Load ("Blocks/Blocks_2") as GameObject;
-
-	}
 
 	// Use this for initialization
 	void Start ()
@@ -43,13 +35,6 @@ public class PlaySceneController : MonoBehaviour
 	{
 	
 		if (GameState.Instance ().M_PlayState == PlayState.PLAY) {
-		
-
-//			if (block_Root != null) {
-//				block_Root.OnUpdate ();
-//				if (!IsEditor ())
-//					UpdateMap ();
-//			}
 			lvMgr.Update ();
 			GameData.Instance ().M_RunningData.M_Score = (int)pC.transform.position.x;
 		}
@@ -58,11 +43,6 @@ public class PlaySceneController : MonoBehaviour
 	void Awake ()
 	{
 
-//		LoadPrefab ();
-//
-//		ResourceMgr.Instance().LoadResource_Play();
-//		Init ();
-//
 		Init ();
 
 	}
@@ -76,166 +56,14 @@ public class PlaySceneController : MonoBehaviour
 		lvMgr = new LvMgr ();
 		lvMgr.LoadBlock_Prefabs ();
 		lvMgr.CreateBlcoks ();
-		lvMgr.Init (pC, block_Root, IsEdit ());
+		lvMgr.Init (pC, isEditMode ? block_Root_Eidtor : block_Root, isEditMode);
 		ResourceMgr.Instance ().LoadResource_Play ();
 
+		block_Root_Eidtor.gameObject.SetActive (isEditMode);
+		block_Root.gameObject.SetActive (!isEditMode);
 
 
 	}
-
-//	void Update_Edit ()
-//	{
-//		if (block_Root != null) {
-//			block_Root.OnUpdate ();
-//		}
-//	}
-//
-//	void Update_Play ()
-//	{
-//		if (block_Root != null) {
-//			block_Root.OnUpdate ();
-//			UpdateMap ();
-//		}
-//	}
-//
-
-//	void Init ()
-//	{
-//		pC = this.gameObject.GetComponentInChildren<PlayerController> ();
-//		pC.gameObject.SetActive (false);
-//		PlayGameInstance.INSTANCE = new PlayGameInstance (this);
-//		
-//		if (block_Root != null ) {
-//			block_Root.Set_ExternalCallUpdate (true);
-//			block_Root.InitParam ();
-//		}
-//
-//		if(!IsEditor()){
-//			InitBlocks ();
-//			InitMap();
-//		}
-//
-//	}
-
-//	void InitMap ()
-//	{
-//		AddInMap (headBlock, Vector3.zero);// head
-//	}
-
-//	List<Block> m_FreeBlocks = new List<Block> ();
-
-
-//	Block GetFreeBlocks ()
-//	{
-//		if (m_FreeBlocks.Count > 0) {
-//			Block b = m_FreeBlocks [m_FreeBlocks.Count - 1];
-//			m_FreeBlocks.Remove (b);
-//			return b;
-//		} else {
-//			InitBlocks ();
-//			Block b = m_FreeBlocks [m_FreeBlocks.Count - 1];
-//			m_FreeBlocks.Remove (b);
-//
-//		
-//			Debug.Log (" no free block");
-//			return b;
-//		}
-//		return null;
-//	}
-
-//	GameObject head;
-//	Block headBlock;
-
-//	void InitBlocks ()
-//	{
-//		if (head == null) {
-//			head = GameObject.Instantiate (m_Block_Head_1_Prefab) as GameObject;
-//			headBlock = head.GetComponent<Block> ();
-//			head.SetActive (false);
-//
-//		}
-//
-//		for (int i=0; i<2; i++) {
-//			GameObject go;
-//			if (i == 0)
-//				go = GameObject.Instantiate (m_Block_1_Prefab) as GameObject;
-//			else
-//				go = GameObject.Instantiate (m_Block_2_Prefab) as GameObject;
-//			Block block = go.GetComponent<Block> ();
-//			m_FreeBlocks.Add (block);
-//			go.SetActive (false);
-//		}
-//	}
-
-//	void AddInMap (Block block, Vector3 locPot)
-//	{
-//
-//		block_Root.AddBlock (block);
-//		block.transform.parent = block_Root.transform;
-//		block.M_Loc_CurPot = locPot;
-//		block.M_Loc_StartPot = locPot;
-//
-//		block.IReset ();
-//		block.InitParam ();
-//		block.gameObject.SetActive (true);
-//
-//		curBlock = block;
-//
-//		Debug.Log ("add in map : locPot=" + locPot);
-//	}
-
-//	void RemoveInMap (Block block)
-//	{
-//		Debug.Log (" remove in map name=" + block.name);
-//		block_Root.RemoveBlock (block);
-//		m_FreeBlocks.Add (block);
-//		block.transform.parent = null;
-//		block.gameObject.SetActive (false);
-//
-//		Debug.Log ("remove in map : locPot=" + block.M_Loc_CurPot);
-//	}
-
-//	void RemoveInMap_Head (Block block)
-//	{
-//		block_Root.RemoveBlock (block);
-//		block.transform.parent = null;
-//		block.gameObject.SetActive (false);
-//	}
-
-//	void RemoveAllInMap ()
-//	{
-//		Block block;
-//		for (int i=1; i<block_Root.M_Blocks.Count; i++) {
-//			block = block_Root.M_Blocks [i];
-//
-//			RemoveInMap (block);
-//			i--;
-//		}
-//	}
-
-//	void UpdateMap ()
-//	{
-//		Vector3 ballPot = pC.transform.position;
-//		if (curBlock == null)
-//			AddInMap (headBlock, Vector3.zero);
-//		else {
-//			if (ballPot.x > curBlock.M_Min_StartX - 30) {
-//				Vector3 locpot = new Vector3 (curBlock.M_Max_EndX + 2, 0, 0);
-//				locpot = block_Root.transform.InverseTransformPoint (locpot);
-//				AddInMap (GetFreeBlocks (), locpot);
-//			}
-//		}
-//
-//		Block block;
-//		for (int i=1; i<block_Root.M_Blocks.Count; i++) {
-//			block = block_Root.M_Blocks [i];
-//			if (ballPot.x > block.M_Max_EndX + 20) {
-//				Debug.Log (" end x=" + block.M_Max_EndX + " ball pot.x=" + ballPot.x);
-//				RemoveInMap (block);
-//				i--;
-//			}
-//		}
-//	}
 
 	void Prepare ()
 	{
@@ -260,9 +88,12 @@ public class PlaySceneController : MonoBehaviour
 	public void OnStart ()
 	{
 		Time.timeScale = 1f;
+
 		StartGame ();
 		GameState.Instance ().M_PlayState = PlayState.PLAY;
 		GameData.Instance ().M_RunningData.M_RoleState = "Normal";
+		block_Root_Eidtor.gameObject.SetActive (isEditMode);
+		block_Root.gameObject.SetActive (!isEditMode);
 	}
 	
 	public void OnPause ()
@@ -286,18 +117,6 @@ public class PlaySceneController : MonoBehaviour
 		pC.Reset ();
 		lvMgr.Reset ();
 		StartGame ();
-
-//		if (IsEditor ()) {
-//			block_Root.IReset ();
-//			block_Root.InitParam ();
-//		} else {
-//			RemoveAllInMap ();
-//			RemoveInMap_Head (headBlock);
-//			AddInMap (headBlock, Vector3.zero);
-//		}
-//
-//		GameState.Instance ().M_PlayState = PlayState.PLAY;
-//		GameData.Instance ().M_RunningData.M_RoleState = "Normal";
 	}
 	
 	public void OnGameOver ()
@@ -305,12 +124,14 @@ public class PlaySceneController : MonoBehaviour
 		
 	}
 
-	bool IsEdit ()
+	public void OnRoleChange (int id)
 	{
-		return block_Root.name == "Blocks_Editor";
+		pC.RoleChange (id);
 	}
 
+	public void OnRoleRevive ()
+	{
 
-
+	}
 
 }

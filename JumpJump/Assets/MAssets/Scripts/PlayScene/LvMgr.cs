@@ -120,7 +120,7 @@ public class LvMgr
 //		else diffId=addBlockCount-1;
 
 		int count=addBlockCount-1;
-		int diffPro_Id=Mathf.Clamp(count,0,pro_Num);
+		int diffPro_Id=Mathf.Clamp(count,0,pro_Num-1);
 		diffId=MathUtil.getRandomByProbability(pro_Diffs[diffPro_Id]);
 	}
 
@@ -131,6 +131,11 @@ public class LvMgr
 		this.isEdit=isEdit;
 		this.block_Root=block_Root;
 	}
+
+	public void SetEditMode(bool isEdit){
+		this.isEdit=isEdit;
+	}
+
 
 	void AddInMap (Block block, Vector3 locPot)
 	{
@@ -209,11 +214,12 @@ public class LvMgr
 	
 	public void Reset ()
 	{
-		ClearMap();
+		if(!isEdit) ClearMap();
 		block_Root.IReset();
 		block_Root.InitParam ();
 		addBlockCount=0;
 		curBlock=null;
+		Debug.Log(" count="+block_Root.M_BlockNum);
 	}
 
 	public void Start(){

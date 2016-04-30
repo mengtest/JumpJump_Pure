@@ -23,8 +23,14 @@ public class CameraFollow : MonoBehaviour
 	{
 		if (!m_target)
 			return;
+
+
+
+		if (shocking) {
+			transform.position = preShockPot;
+		}
 		UpdatePotAndDir ();
-	
+		ShockEffect();
 	}
 
 	void ComputePosition (float eulerAngleY)
@@ -108,6 +114,56 @@ public class CameraFollow : MonoBehaviour
 //		m_Dy_Camera_Target = transform.position.y - m_target.position.y;
 
 	}
+
+
+
+	#region shock
+
+	public TweenPosition tp ;
+	public bool shockOnScreenUpDown = false;
+	public bool debugShock = false;
+	float shockSpanTime = 0;
+	float shockTime = 0;
+	bool shocking = false;
+	Vector3 preShockPot;
+	float startShockPotY;
+	
+	void ShockEffect ()
+	{
+		if (debugShock) {
+			shockSpanTime += Time.deltaTime;
+			if (shockSpanTime > 3f) {
+				StartShockEffect ();
+			}		
+		}
+		
+		if (shocking) {
+			preShockPot = transform.position;
+			transform.position = preShockPot + (shockOnScreenUpDown ? tp.cachedTransform.localPosition.y * transform.up : tp.cachedTransform.localPosition);
+		}
+	}
+	
+	public void ShockFinished ()
+	{
+		shocking = false;
+//		Vector3 curPot=transform.position;
+//		curPot.y=startShockPotY;
+//		transform.position=curPot;
+	}
+	
+	public void StartShockEffect ()
+	{
+		tp.enabled = true;
+		tp.ResetToBeginning ();
+		tp.PlayForward ();
+		shockSpanTime = 0;
+		shocking = true;
+		tp.SetOnFinished (ShockFinished);
+		startShockPotY=transform.position.y;
+		preShockPot=transform.position;
+	}
+
+	#endregion
 
 
 }

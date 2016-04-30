@@ -10,15 +10,25 @@ public class GameOverPanel : UIWindow {
 	}
 
 	public void ToMenuScreen(){
-		GameController.GetInstance ().GetMainPanel().ShowIn ();
-		GameController.GetInstance ().GetPlayPanel().ShowOut ();
-		GameController.GetInstance ().GetGameOverPanel().ShowOut ();
+
+		DelayAction delay1 = new DelayAction (GameController.GetInstance ().GetGameOverPanel().DisplayTime,()=>{
+			GameController.GetInstance ().GetPlayPanel().ShowOut ();
+			GameController.GetInstance ().GetGameOverPanel().ShowOut ();
+		},()=>{
+			GameController.GetInstance ().GetMainPanel().ShowIn ();
+		});
+		delay1.Play ();
 	}
 	
 	public void OnRestart(){
-		GameController.GetInstance ().GetGameOverPanel().ShowOut ();
-		GameController.GetInstance ().GetPlayGameInstance().OnResume ();
-		GameController.GetInstance ().GetPlayGameInstance().OnReStart ();
-		GameController.GetInstance ().GetPlayPanel ().Start ();
+
+		DelayAction delay1 = new DelayAction (GameController.GetInstance ().GetGameOverPanel().DisplayTime,()=>{
+			GameController.GetInstance ().GetGameOverPanel().ShowOut ();
+		},()=>{
+			GameController.GetInstance ().GetPlayGameInstance().OnResume ();
+			GameController.GetInstance ().GetPlayGameInstance().OnReStart ();
+			GameController.GetInstance ().GetPlayPanel ().Start ();
+		});
+		delay1.Play ();
 	}
 }

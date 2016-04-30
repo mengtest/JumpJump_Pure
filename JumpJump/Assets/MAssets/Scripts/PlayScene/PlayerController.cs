@@ -110,6 +110,7 @@ public class PlayerController : MonoBehaviour
 		dieEffect.SetActive(false);
 		player.Init ();
 		m_FailPerpare_Timer.Pause();
+		m_Isfailed = false;
 	}
 
 	#endregion
@@ -401,10 +402,16 @@ public class PlayerController : MonoBehaviour
 	float  m_FailPerpare_Duration=0.5f;
 	bool m_FailPerpare=false;
 
+
+	bool m_Isfailed=false;
+
 	void OnFail ()
 	{
 
-		PlayGameInstance.INSTANCE.OnGameResult ();
+		if (!m_Isfailed) {
+			PlayGameInstance.INSTANCE.OnGameResult ();
+			m_Isfailed=true;
+		}
 	}
 
 	void PerpareFail(){

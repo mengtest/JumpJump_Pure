@@ -18,10 +18,16 @@ public class MainPanel : UIWindow
 
 	public void Play ()
 	{
-		GameController.GetInstance ().GetPlayGameInstance ().OnStart ();
-		GameController.GetInstance ().GetMainPanel ().ShowOut ();
-		GameController.GetInstance ().GetPlayPanel ().ShowIn ();
-		GameController.GetInstance ().GetPlayPanel ().Start ();
+
+
+//		DelayAction delay1 = new DelayAction (GameController.GetInstance ().GetGameOverPanel().DisplayTime,()=>{
+			GameController.GetInstance ().GetMainPanel ().ShowOut ();
+			GameController.GetInstance ().GetPlayPanel ().ShowIn ();
+//		},()=>{
+				GameController.GetInstance ().GetPlayGameInstance ().OnStart ();
+				GameController.GetInstance ().GetPlayPanel ().Start ();
+//		});
+//		delay1.Play ();
 	}
 
 	void Update ()

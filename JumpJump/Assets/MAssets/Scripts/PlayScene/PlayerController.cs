@@ -108,8 +108,13 @@ public class PlayerController : MonoBehaviour
 		runEffect.SetActive (false);
 		dieEffect.SetActive (false);
 		player.Init ();
+//<<<<<<< HEAD
 		m_FailPerpare_Timer.Pause ();
 		InitRole();
+//=======
+		m_FailPerpare_Timer.Pause();
+		m_Isfailed = false;
+//>>>>>>> 5947285866829b2a92a8ba47b07e66aeef65a2c1
 	}
 
 	#endregion
@@ -400,10 +405,16 @@ public class PlayerController : MonoBehaviour
 	float  m_FailPerpare_Duration = 0.5f;
 	bool m_FailPerpare = false;
 
+
+	bool m_Isfailed=false;
+
 	void OnFail ()
 	{
 
-		PlayGameInstance.INSTANCE.OnGameResult ();
+		if (!m_Isfailed) {
+			PlayGameInstance.INSTANCE.OnGameResult ();
+			m_Isfailed=true;
+		}
 	}
 
 	void PerpareFail ()

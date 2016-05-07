@@ -50,7 +50,7 @@ public class PlayerController : MonoBehaviour
 
 	
 	#region init and reset
-	void Init ()
+	public void Init ()
 	{
 		m_Rigidbody = GetComponent<Rigidbody> ();
 		m_sphereCollider = GetComponent<SphereCollider> ();
@@ -59,7 +59,7 @@ public class PlayerController : MonoBehaviour
 		
 		m_InitPot = transform.position;
 		m_InitRotate = transform.eulerAngles;
-		
+
 		m_Rigidbody.angularVelocity = Vector3.right * 0.1f;
 		
 		Physics.gravity = m_Gravity;
@@ -123,7 +123,7 @@ public class PlayerController : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
-		Init ();
+//		Init ();
 	}
 	
 	// Update is called once per frame

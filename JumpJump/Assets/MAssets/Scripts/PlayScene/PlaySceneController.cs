@@ -50,6 +50,7 @@ public class PlaySceneController : MonoBehaviour
 	void Init ()
 	{
 		pC = this.gameObject.GetComponentInChildren<PlayerController> ();
+		pC.Init();
 		pC.gameObject.SetActive (false);
 		PlayGameInstance.INSTANCE = new PlayGameInstance (this);
 
@@ -83,15 +84,20 @@ public class PlaySceneController : MonoBehaviour
 
 	void ResumeGame ()
 	{
+
 	}
 
 	public void OnStart ()
 	{
 		Time.timeScale = 1f;
 
-		StartGame ();
+		pC.gameObject.SetActive (true);
+		pC.Reset();
+		lvMgr.Start ();
+
 		GameState.Instance ().M_PlayState = PlayState.PLAY;
 		GameData.Instance ().M_RunningData.M_RoleState = "Normal";
+
 		block_Root_Eidtor.gameObject.SetActive (isEditMode);
 		block_Root.gameObject.SetActive (!isEditMode);
 	}
@@ -113,10 +119,14 @@ public class PlaySceneController : MonoBehaviour
 	
 	public void OnRestart ()
 	{
-
+		Time.timeScale = 1f;
+		pC.gameObject.SetActive (true);
 		pC.Reset ();
 		lvMgr.Reset ();
-		StartGame ();
+		GameState.Instance ().M_PlayState = PlayState.PLAY;
+		GameData.Instance ().M_RunningData.M_RoleState = "Normal";
+//		StartGame ();
+
 	}
 	
 	public void OnGameOver ()

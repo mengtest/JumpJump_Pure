@@ -23,6 +23,12 @@ public class ElementButton : SGElementBase
             mytext.text = config.ConfigInfs [index].desc;
         else
             b.image.sprite = config.ConfigInfs [index].sprite;
+
+		b.onClick.AddListener (() => {
+			GameController.GetInstance ().GetPlayGameInstance ().OnRoleSeleted(index%2);
+			GameController.GetInstance ().GetMainPanel ().Play();
+		});
+
 		return true;
       
     }

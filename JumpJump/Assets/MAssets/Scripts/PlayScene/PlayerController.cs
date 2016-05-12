@@ -703,7 +703,7 @@ public class PlayerController : MonoBehaviour
 	public void InitRole(){
 		roleNode.SetActive(true);
 		int id=GameData.Instance().M_SettingData.m_LastSelectedRoleId;
-		id=1;
+//		id=1;
 		switch (id) {
 		case RoleTypeId.MEN:
 			ShowMen();

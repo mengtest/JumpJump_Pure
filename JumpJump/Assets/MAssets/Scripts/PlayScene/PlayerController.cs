@@ -21,7 +21,7 @@ public class PlayerController : MonoBehaviour
 	Vector3 m_InitPot;
 	Vector3 m_InitRotate;
 	int m_JumpTimes = 0;
-	int m_MaxJumpTimes = 2;//1;
+	int m_MaxJumpTimes =1;// 2;//1;
 	Vector3 m_OldVelocity;
 	public Vector3 m_Gravity = new Vector3 (0, -9.8f, 0);
 	public GameObject magnetEffect;
@@ -32,6 +32,11 @@ public class PlayerController : MonoBehaviour
 	public GameObject blockBreakEffect;
 	public GameObject roleNode;
 	public PlayerAnimator playerAnimator;
+	public SpriteRenderer functionIcon_SpriteRender;
+	public Sprite [] functionIcons;
+
+
+
 	CPlayer player;
 	public TextMesh stateMesh;
 
@@ -115,6 +120,8 @@ public class PlayerController : MonoBehaviour
 		m_FailPerpare_Timer.Pause();
 		m_Isfailed = false;
 //>>>>>>> 5947285866829b2a92a8ba47b07e66aeef65a2c1
+		CloseKinematicAndTrigger();
+		m_Rigidbody.useGravity = true;
 	}
 
 	#endregion
@@ -474,12 +481,12 @@ public class PlayerController : MonoBehaviour
 				break;
 			case FunctionType.JUMP_HEIGHTER:
 				SetEmptyFunction ();
-				moveSpeed.y = m_InitMoveSpeed.y * 1.2f;
+				OnHighter();
 				GameData.Instance ().M_RunningData.M_RoleState = "Higher";
 				break;
 			case FunctionType.JUMP_TWICE:
 				SetEmptyFunction ();
-				m_MaxJumpTimes = 2;
+				OnTwice();
 				GameData.Instance ().M_RunningData.M_RoleState = "Twice";
 				break;
 			case FunctionType.SPEED_UP:
@@ -510,8 +517,42 @@ public class PlayerController : MonoBehaviour
 	void SetEmptyFunction ()
 	{
 		moveSpeed.y = m_InitMoveSpeed.y;
-//		m_MaxJumpTimes = 1;
+		m_MaxJumpTimes = 1;
+		SetFuctionIcon(FunctionType.EMPTY);
+
 	}
+
+	void SetFuctionIcon(FunctionType  type){
+		switch(type){
+		case FunctionType.EMPTY:
+			functionIcon_SpriteRender.gameObject.SetActive(false);
+			break;
+		case FunctionType.UNBEATABLE:
+			functionIcon_SpriteRender.gameObject.SetActive(true);
+			functionIcon_SpriteRender.sprite=functionIcons[0];
+			break;
+		case FunctionType.JUMP_TWICE:
+			functionIcon_SpriteRender.gameObject.SetActive(true);
+			functionIcon_SpriteRender.sprite=functionIcons[1];
+			break;
+		case FunctionType.JUMP_HEIGHTER:
+			functionIcon_SpriteRender.gameObject.SetActive(true);
+			functionIcon_SpriteRender.sprite=functionIcons[2];
+			break;
+		}
+	}
+
+	void OnHighter(){
+		moveSpeed.y = m_InitMoveSpeed.y * 1.2f;
+		SetFuctionIcon(FunctionType.JUMP_HEIGHTER);
+	}
+
+	void OnTwice(){
+		m_MaxJumpTimes = 2;
+		SetFuctionIcon(FunctionType.JUMP_TWICE);
+	}
+
+
 	#endregion
 
 
@@ -530,6 +571,8 @@ public class PlayerController : MonoBehaviour
 		OpenKinematicAndTrigger ();
 		unbeatableEffect.SetActive (true);
 
+		SetFuctionIcon(FunctionType.UNBEATABLE);
+
 	}
 
 	void OnUnbeatable_Over ()
@@ -545,6 +588,7 @@ public class PlayerController : MonoBehaviour
 		m_Renderer.material = m_InitMtl;
 
 		UpdateVel ();
+		SetFuctionIcon(FunctionType.EMPTY);
 	}
 
 	Vector3 m_Unbeatable_Vec = Vector3.zero;

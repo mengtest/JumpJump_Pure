@@ -65,8 +65,8 @@ public class Object3dEditor : Editor
 				object3d._ChangeFunction ();
 				if (object3d as Block) {
 					Block block = (Block)object3d;
-					for(int i=0;i<block.M_Bricks.Count;i++){
-						EditorUtility.SetDirty (block.M_Bricks[i]);
+					for (int i=0; i<block.M_Bricks.Count; i++) {
+						EditorUtility.SetDirty (block.M_Bricks [i]);
 					}
 				}
 				Debug.Log ("ddf");
@@ -115,22 +115,26 @@ public class Object3dEditor : Editor
 			GUILayout.Space (6f);
 			GUI.changed = false;
 			
-			
+
+
 			SerializedProperty moveInCT = serializedObject.FindProperty ("m_MoveIn_CT");
 			EditorGUILayout.PropertyField (moveInCT, new GUIContent ("moveInCT"), false);
 
-
-			Vector3 moveInSpan = EditorGUILayout.Vector3Field ("MoveInSpan", object3d.M_MoveIn_Span);
-			int moveInDuration = EditorGUILayout.IntField ("MoveInDuration", object3d.M_MoveIn_Duration);
-			int moveIn_ArriveTime = EditorGUILayout.IntField ("MoveIn_ArriveTime", object3d.M_MoveIn_ArriveTime);
-			int moveIn_Delay = EditorGUILayout.IntField ("MoveIn_Delay", object3d.M_MoveIn_Delay);
+			if (object3d.M_MoveIn_CT != MoveIn_ConditionType.EMPTY) {
 			
-			if (GUI.changed) {
-				object3d.M_MoveIn_Span = moveInSpan;
-				object3d.M_MoveIn_Duration = moveInDuration;
-				object3d.M_MoveIn_ArriveTime = moveIn_ArriveTime;
-				object3d.M_MoveIn_Delay = moveIn_Delay;
-				EditorUtility.SetDirty (object3d);
+
+				Vector3 moveInSpan = EditorGUILayout.Vector3Field ("MoveInSpan", object3d.M_MoveIn_Span);
+				int moveInDuration = EditorGUILayout.IntField ("MoveInDuration", object3d.M_MoveIn_Duration);
+				int moveIn_ArriveTime = EditorGUILayout.IntField ("MoveIn_ArriveTime", object3d.M_MoveIn_ArriveTime);
+				int moveIn_Delay = EditorGUILayout.IntField ("MoveIn_Delay", object3d.M_MoveIn_Delay);
+			
+				if (GUI.changed) {
+					object3d.M_MoveIn_Span = moveInSpan;
+					object3d.M_MoveIn_Duration = moveInDuration;
+					object3d.M_MoveIn_ArriveTime = moveIn_ArriveTime;
+					object3d.M_MoveIn_Delay = moveIn_Delay;
+					EditorUtility.SetDirty (object3d);
+				}
 			}
 
 			GUILayout.Space (16f);
@@ -138,18 +142,19 @@ public class Object3dEditor : Editor
 			SerializedProperty moveOutCT = serializedObject.FindProperty ("m_MoveOut_CT");
 			EditorGUILayout.PropertyField (moveOutCT, new GUIContent ("moveOutCT"), false);
 			
+			if (object3d.M_MoveOut_CT != MoveOut_ConditionType.EMPTY) {
+				Vector3 moveOutSpan = EditorGUILayout.Vector3Field ("MoveOutSpan", object3d.M_MoveOut_Span);
+				int moveOutDuration = EditorGUILayout.IntField ("MoveOutDuration", object3d.M_MoveOut_Duration);
+				int moveOut_LeaveTime = EditorGUILayout.IntField ("MoveOut_LeaveTime", object3d.M_MoveOut_LeaveTime);
+				int moveOut_Delay = EditorGUILayout.IntField ("MoveOut_Delay", object3d.M_MoveOut_Delay);
 			
-			Vector3 moveOutSpan = EditorGUILayout.Vector3Field ("MoveOutSpan", object3d.M_MoveOut_Span);
-			int moveOutDuration = EditorGUILayout.IntField ("MoveOutDuration", object3d.M_MoveOut_Duration);
-			int moveOut_LeaveTime = EditorGUILayout.IntField ("MoveOut_LeaveTime", object3d.M_MoveOut_LeaveTime);
-			int moveOut_Delay = EditorGUILayout.IntField ("MoveOut_Delay", object3d.M_MoveOut_Delay);
-			
-			if (GUI.changed) {
-				object3d.M_MoveOut_Span = moveOutSpan;
-				object3d.M_MoveOut_Duration = moveOutDuration;
-				object3d.M_MoveOut_LeaveTime = moveOut_LeaveTime;
-				object3d.M_MoveOut_Delay = moveOut_Delay;
-				EditorUtility.SetDirty (object3d);
+				if (GUI.changed) {
+					object3d.M_MoveOut_Span = moveOutSpan;
+					object3d.M_MoveOut_Duration = moveOutDuration;
+					object3d.M_MoveOut_LeaveTime = moveOut_LeaveTime;
+					object3d.M_MoveOut_Delay = moveOut_Delay;
+					EditorUtility.SetDirty (object3d);
+				}
 			}
 			
 		}

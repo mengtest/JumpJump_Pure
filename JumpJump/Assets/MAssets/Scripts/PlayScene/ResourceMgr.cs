@@ -115,6 +115,7 @@ public class ResourceMgr
 
 	public GameObject CreateBrick_Child (int type)
 	{
+		if(NeedReloadBrick()) LoadBrick();
 		GameObject child = null;
 		switch (type) {
 		case TYPE_EMPTY:
@@ -136,7 +137,20 @@ public class ResourceMgr
 			child = GameObject.Instantiate (m_CoinBrickPrefab) as GameObject;
 			break;
 		}
+
 		return child;
+	}
+
+
+	bool NeedReloadBrick(){
+		Debug.Log(" need reload brick");
+		for(int i=0;i<m_EmptyBrickPrefabs.Length;i++){
+			if(m_EmptyBrickPrefabs[i]==null) return true;
+		}
+		for(int i=0;i<m_FunctionBirckPrefabs.Length;i++){
+			if(m_FunctionBirckPrefabs[i]==null) return true;
+		}
+		return false;
 	}
 
 

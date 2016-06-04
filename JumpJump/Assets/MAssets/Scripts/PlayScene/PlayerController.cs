@@ -397,7 +397,7 @@ public class PlayerController : MonoBehaviour
 	
 	void CheckFailed ()
 	{
-		float minY = m_IsUnbeatable ? -1f : - 0.5f;
+		float minY = m_IsUnbeatable ? -2 : - 1f;
 		if (transform.position.y < minY) {
 			OnFail ();
 //			Camera.main.GetComponent<CameraFollow>().StartShockEffect();

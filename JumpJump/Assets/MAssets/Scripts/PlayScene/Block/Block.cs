@@ -80,7 +80,7 @@ public class Block : Object3d , IPoolable
 		UpdateWorldPot ();
 	}
 
-	bool isExternalCallUpdate = false;
+	bool isExternalCallUpdate =true;// false;
 
 	public void Set_ExternalCallUpdate (bool isCall)
 	{

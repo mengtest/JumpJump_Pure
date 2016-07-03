@@ -12,28 +12,30 @@ using TMPro;
 
 public class MainPanel : UIWindow
 {
-
-	public Button VedioButton;
-	public TextMeshProUGUI CoinsNumber;
+	[SerializeField]
+	private Button VedioButton;
+	[SerializeField]
+	private TextMeshProUGUI CoinsNumber;
 
 	public void Play ()
 	{
 
-
-//		DelayAction delay1 = new DelayAction (GameController.GetInstance ().GetGameOverPanel().DisplayTime,()=>{
+		DelayAction delay1 = new DelayAction (GameController.GetInstance ().GetGameOverPanel().DisplayTime,()=>{
 			GameController.GetInstance ().GetMainPanel ().ShowOut ();
 			GameController.GetInstance ().GetPlayPanel ().ShowIn ();
-//		},()=>{
+		},()=>{
 				GameController.GetInstance ().GetPlayGameInstance ().OnStart ();
 				GameController.GetInstance ().GetPlayPanel ().Start ();
-//		});
-//		delay1.Play ();
+		});
+		delay1.Play ();
 	}
 
 	void Update ()
 	{
 		if (SGConfig.Instant.isLoad) {
-			VedioButton.interactable = AdManager.instant.VideoIsLoad ();
+			VedioButton.gameObject.SetActive (true);
+		} else {
+			VedioButton.gameObject.SetActive (false);
 		}
 		CoinsNumber.text = GameData.Instance ().M_PerpetualData.m_Coins.ToString ();
 	}
